@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <!-- GLOBAL NAVIGATION MENU BAR -->
     <header class="navbar">
         <div class="nav-container">
             <div class="brand-logo">⚡ APEX SPORTS HUB</div>
@@ -21,59 +20,60 @@
     </header>
 
     <main class="page-container">
-        <!-- HERO SECTION -->
         <section class="hero-card">
             <h1>📊 Data-Driven Fantasy Trade Grader</h1>
-            <p>Analyze fantasy trades like the pros on Flock Fantasy! Evaluates rest-of-season (ROS) player value, positional scarcity, and outputs an instant trade grade.</p>
+            <p>Flock Fantasy style rest-of-season trade evaluator. Type any player's name below to analyze total package values and trade fairness!</p>
             <img class="hero-image" src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1200&q=80" alt="Data analytics charts and fantasy stats on screen">
         </section>
 
-        <!-- SPORT SELECTOR TABS -->
+        <!-- SPORT SELECTOR -->
         <section class="section-card">
-            <h2>Select Fantasy League Sport</h2>
+            <h2>Select Fantasy Sport</h2>
             <div class="sport-tabs">
-                <button class="tab-btn active" onclick="switchFantasySport('nfl')">🏈 NFL Fantasy</button>
-                <button class="tab-btn" onclick="switchFantasySport('nba')">🏀 NBA Fantasy</button>
+                <button class="tab-btn active" onclick="switchFantasySport('nba')">🏀 NBA Fantasy</button>
+                <button class="tab-btn" onclick="switchFantasySport('nfl')">🏈 NFL Fantasy</button>
                 <button class="tab-btn" onclick="switchFantasySport('mlb')">⚾ MLB Fantasy</button>
             </div>
         </section>
 
-        <!-- FANTASY TRADE EVALUATOR -->
+        <!-- GLOBAL DATALIST FOR ALL PLAYERS -->
+        <datalist id="all-players-list"></datalist>
+
+        <!-- TRADE EVALUATOR SEARCH BOXES -->
         <section class="section-card">
-            <h2>Side-by-Side Trade Evaluator</h2>
+            <h2>Side-by-Side Player Trade Search</h2>
             <div class="trade-evaluator-grid">
-                <!-- TEAM A GIVES -->
+                <!-- TEAM A -->
                 <div class="eval-column">
                     <h3 class="team-title text-primary">Team A Gives Up</h3>
-                    <select id="fantasy-teamA-p1" class="form-select" onchange="calculateFantasyTrade()"></select>
-                    <select id="fantasy-teamA-p2" class="form-select" onchange="calculateFantasyTrade()"></select>
+                    <input type="text" id="fantasy-input-A1" class="form-input" list="all-players-list" placeholder="Type or select Player 1..." oninput="calculateFantasyTrade()">
+                    <input type="text" id="fantasy-input-A2" class="form-input" list="all-players-list" placeholder="Type or select Player 2 (Optional)..." oninput="calculateFantasyTrade()">
                     <div class="value-summary">Total Value: <strong id="val-teamA">0 pts</strong></div>
                 </div>
 
-                <!-- TRADE VS BADGE -->
                 <div class="eval-vs">VS</div>
 
-                <!-- TEAM B GIVES -->
+                <!-- TEAM B -->
                 <div class="eval-column">
                     <h3 class="team-title text-accent">Team B Gives Up</h3>
-                    <select id="fantasy-teamB-p1" class="form-select" onchange="calculateFantasyTrade()"></select>
-                    <select id="fantasy-teamB-p2" class="form-select" onchange="calculateFantasyTrade()"></select>
+                    <input type="text" id="fantasy-input-B1" class="form-input" list="all-players-list" placeholder="Type or select Player 1..." oninput="calculateFantasyTrade()">
+                    <input type="text" id="fantasy-input-B2" class="form-input" list="all-players-list" placeholder="Type or select Player 2 (Optional)..." oninput="calculateFantasyTrade()">
                     <div class="value-summary">Total Value: <strong id="val-teamB">0 pts</strong></div>
                 </div>
             </div>
 
-            <button class="btn-primary" onclick="calculateFantasyTrade()" style="width: 100%; margin-top: 20px;">⚡ Analyze Trade Grade Now</button>
+            <button class="btn-primary" onclick="calculateFantasyTrade()" style="width: 100%; margin-top: 20px;">⚡ Grade Trade Now</button>
         </section>
 
-        <!-- TRADE GRADE BREAKDOWN RESULT DISPLAY -->
+        <!-- RESULTS -->
         <section class="section-card">
-            <h2>Flock-Style Expert Trade Analysis</h2>
+            <h2>Expert Trade Grade Analysis</h2>
             <div class="grade-container">
                 <div id="grade-badge" class="grade-badge badge-neutral">GRADED</div>
-                <div id="grade-verdict" class="grade-verdict">Select players above to generate a rest-of-season trade evaluation grade!</div>
+                <div id="grade-verdict" class="grade-verdict">Type player names above to generate a rest-of-season trade grade!</div>
             </div>
             <div id="grade-breakdown-box" class="feedback-box">
-                <p>📊 <strong>Key Metrics Analyzed:</strong> Rest of Season (ROS) Projections, Usage Scarcity Index, Positional Replacement Baseline.</p>
+                <p>📊 <strong>Key Metrics Analyzed:</strong> Rest of Season (ROS) Projections, Positional Scarcity Index, Replacement Baseline.</p>
             </div>
         </section>
     </main>
