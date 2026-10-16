@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apex Sports Hub | Daily News & Headlines</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- GLOBAL NAVIGATION MENU BAR -->
+    <header class="navbar">
+        <div class="nav-container">
+            <div class="brand-logo">⚡ APEX SPORTS HUB</div>
+            <nav class="nav-links">
+                <a href="index.html" class="nav-item active">📰 News Hub</a>
+                <a href="games.html" class="nav-item">🎟️ Games & Tickets</a>
+                <a href="gm.html" class="nav-item">🎮 GM Franchise</a>
+                <a href="fantasy.html" class="nav-item">📊 Fantasy Trade Grader</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- LIVE TICKER MARQUEE -->
+    <div class="ticker-bar">
+        <div class="ticker-content">
+            🔥 <strong>BREAKING:</strong> Blockbuster multi-player trade agreed upon ahead of deadline! &nbsp;&nbsp;|&nbsp;&nbsp;
+            🏀 NBA Championship Odds updated following last night's game &nbsp;&nbsp;|&nbsp;&nbsp;
+            ⚾ MLB Opening Day pitching rotation officially announced &nbsp;&nbsp;|&nbsp;&nbsp;
+            🏈 NFL Draft Combine scouting reports released
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT CONTAINER -->
+    <main class="page-container">
+        <!-- HERO SECTION -->
+        <section class="hero-card">
+            <h1>Daily Sports News & Breaking Headlines</h1>
+            <p>Your ultimate destination for real-time coverage across professional basketball, football, and baseball.</p>
+            <img class="hero-image" src="https://images.unsplash.com/photo-1504450758481-7338eba7524a?auto=format&fit=crop&w=1200&q=80" alt="Professional sports stadium arena illuminated at night">
+        </section>
+
+        <!-- NEWS FILTER CONTROLS -->
+        <section class="section-card">
+            <h2>Filter News by League</h2>
+            <div class="filter-buttons">
+                <button class="filter-btn active" onclick="filterNews('all')">All Leagues</button>
+                <button class="filter-btn" onclick="filterNews('nba')">🏀 NBA Basketball</button>
+                <button class="filter-btn" onclick="filterNews('nfl')">🏈 NFL Football</button>
+                <button class="filter-btn" onclick="filterNews('mlb')">⚾ MLB Baseball</button>
+            </div>
+        </section>
+
+        <!-- NEWS ARTICLES GRID -->
+        <section class="section-card">
+            <h2>Latest Headlines & Game Recaps</h2>
+            <div id="news-grid" class="cards-grid">
+                <!-- NBA News Item -->
+                <article class="content-card news-item nba">
+                    <span class="badge badge-nba">🏀 NBA</span>
+                    <h3>Championship Race Heats Up as Playoff Seeds Solidify</h3>
+                    <p class="meta-date">Updated 2 hours ago</p>
+                    <p>Top contenders across the Eastern and Western conferences delivered clutch performances in last night's thriller, shifting the postseason matchup picture dramatically.</p>
+                    <a href="https://www.espn.com" target="_blank" rel="noopener noreferrer" class="action-link">Read Full Story on ESPN ➔</a>
+                </article>
+
+                <!-- NFL News Item -->
+                <article class="content-card news-item nfl">
+                    <span class="badge badge-nfl">🏈 NFL</span>
+                    <h3>Quarterback Trade Rumors Surge Ahead of Free Agency</h3>
+                    <p class="meta-date">Updated 4 hours ago</p>
+                    <p>Front offices are holding high-stakes roster discussions as key franchise quarterbacks prepare to test the free agent market or request offseason trades.</p>
+                    <a href="https://www.cbssports.com" target="_blank" rel="noopener noreferrer" class="action-link">Read Analysis on CBS Sports ➔</a>
+                </article>
+
+                <!-- MLB News Item -->
+                <article class="content-card news-item mlb">
+                    <span class="badge badge-mlb">⚾ MLB</span>
+                    <h3>Ace Pitchers Deliver Masterclass Dominance in Pennant Pursuit</h3>
+                    <p class="meta-date">Updated 6 hours ago</p>
+                    <p>Starting rotation stars posted double-digit strikeouts and complete games as division rivals clash in crucial late-season series play.</p>
+                    <a href="https://www.bleacherreport.com" target="_blank" rel="noopener noreferrer" class="action-link">View Highlights on Bleacher Report ➔</a>
+                </article>
+            </div>
+        </section>
+
+        <!-- LEAGUE STANDINGS QUICK SUMMARY LIST -->
+        <section class="section-card">
+            <h2>Division Power Rankings</h2>
+            <ul class="rankings-list">
+                <li><strong>1. Eastern Conference Leaders:</strong> 48 Wins - 14 Losses (.774 PCT)</li>
+                <li><strong>2. Western Conference Leaders:</strong> 46 Wins - 16 Losses (.742 PCT)</li>
+                <li><strong>3. NFL Division Champions:</strong> 13 Wins - 4 Losses (.765 PCT)</li>
+                <li><strong>4. MLB League Leaders:</strong> 98 Wins - 64 Losses (.605 PCT)</li>
+            </ul>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>© 2026 Apex Sports Hub. Powered by HTML, CSS, and JavaScript.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
