@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apex Sports Hub | $500M Multi-Sport GM Simulator</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- GLOBAL NAVIGATION MENU BAR -->
+    <header class="navbar">
+        <div class="nav-container">
+            <div class="brand-logo">⚡ APEX SPORTS HUB</div>
+            <nav class="nav-links">
+                <a href="index.html" class="nav-item">📰 News Hub</a>
+                <a href="games.html" class="nav-item">🎟️ Games & Tickets</a>
+                <a href="gm.html" class="nav-item active">🎮 GM Franchise</a>
+                <a href="fantasy.html" class="nav-item">📊 Fantasy Trade Grader</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="page-container">
+        <!-- HERO SECTION -->
+        <section class="hero-card">
+            <h1>🎮 $500M GM Franchise Simulator</h1>
+            <p>Build a championship dynasty under a $500M salary cap! Draft active superstars and legends, execute blockbuster trades, and simulate season performance.</p>
+            <img class="hero-image" src="https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=1200&q=80" alt="Gaming console controller setup">
+        </section>
+
+        <!-- SPORT SELECTOR TABS -->
+        <section class="section-card">
+            <h2>Select Franchise Sport</h2>
+            <div class="sport-tabs">
+                <button class="tab-btn active" onclick="switchGMSport('nba')">🏀 NBA Franchise</button>
+                <button class="tab-btn" onclick="switchGMSport('nfl')">🏈 NFL Franchise</button>
+                <button class="tab-btn" onclick="switchGMSport('mlb')">⚾ MLB Franchise</button>
+            </div>
+        </section>
+
+        <!-- $500M SALARY CAP TRACKER -->
+        <section class="section-card">
+            <div class="cap-header">
+                <h2>$500M Salary Cap Status (<span id="current-sport-label">NBA</span>)</h2>
+                <div class="cap-counter">
+                    Remaining: <strong id="cap-remaining">$500M</strong> / $500M
+                </div>
+            </div>
+            <div class="progress-bar-bg">
+                <div id="cap-progress-fill" class="progress-bar-fill" style="width: 0%;"></div>
+            </div>
+        </section>
+
+        <!-- ROSTER DRAFT BOARD -->
+        <section class="section-card">
+            <h2>Starting Lineup Roster Board</h2>
+            <div id="gm-roster-grid" class="roster-grid">
+                <!-- Dynamically populated by script.js -->
+            </div>
+            <button id="draft-random-btn" class="btn-secondary" onclick="autoDraftGMRoster()">🎲 Auto-Draft Random $500M Roster</button>
+        </section>
+
+        <!-- INTERACTIVE TRADE MACHINE -->
+        <section class="section-card">
+            <h2>Trade Machine & Player Exchange</h2>
+            <p>Propose a trade between your drafted roster and available trade market assets.</p>
+            <div class="trade-grid">
+                <div class="trade-column">
+                    <h3>Your Roster Asset</h3>
+                    <select id="user-trade-select" class="form-select"></select>
+                </div>
+                <div class="trade-column">
+                    <h3>Available Trade Target</h3>
+                    <select id="target-trade-select" class="form-select"></select>
+                </div>
+            </div>
+            <button class="btn-primary" onclick="evaluateGMTrade()" style="margin-top: 15px;">🔄 Propose Trade</button>
+            <div id="trade-feedback" class="feedback-box"></div>
+        </section>
+
+        <!-- SEASON SIMULATOR ENGINE -->
+        <section class="section-card">
+            <h2>Season Simulation & Standings</h2>
+            <div class="sim-controls">
+                <button id="sim-10-btn" class="btn-primary" onclick="simulateGMGames(10)" disabled>🚀 Simulate 10 Games</button>
+                <button id="sim-season-btn" class="btn-primary" onclick="simulateGMGames(82)" disabled>🏆 Simulate Full Season</button>
+            </div>
+            <div id="sim-ticker-box" class="sim-ticker" style="display: none;">Ready to simulate...</div>
+            <div id="gm-standings-box" class="feedback-box" style="display: none;"></div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>© 2026 Apex Sports Hub. Powered by HTML, CSS, and JavaScript.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
