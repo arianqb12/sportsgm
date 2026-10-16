@@ -1,56 +1,221 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Document Metadata & Encoding -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Apex Sports Hub | Live Scores & Ticket Marketplace</title>
+    <meta name="description" content="Apex Sports Hub - Live ESPN scoreboards, real-time game clocks, period tracking, and direct ticket price comparisons for NBA, NFL, and MLB.">
+    <meta name="keywords" content="sports games, live scores, ESPN API scoreboard, NBA scores, NFL scores, MLB scores, ticket marketplace, SeatGeek, StubHub, Ticketmaster">
+    <meta name="author" content="Apex Sports Development Team">
+    
+    <!-- Open Graph Metadata for Social Media Sharing -->
+    <meta property="og:title" content="Apex Sports Hub | Live Scores & Ticket Marketplace">
+    <meta property="og:description" content="Track real-time game scores and period updates directly from ESPN's API, and find the lowest ticket deals.">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?auto=format&fit=crop&w=1200&q=80">
+    <meta property="og:type" content="website">
+
+    <!-- Page Title -->
+    <title>Apex Sports Hub | Games of the Day & Live Ticket Marketplace</title>
+
+    <!-- External Style Sheet Link -->
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <!-- GLOBAL NAVIGATION MENU BAR -->
-    <header class="navbar">
+
+    <!-- ==================================================
+         GLOBAL NAVIGATION BAR
+         Consistent header menu present across all pages
+    ================================================== -->
+    <header class="navbar" aria-label="Global Navigation Header">
         <div class="nav-container">
-            <div class="brand-logo">⚡ APEX SPORTS HUB</div>
-            <nav class="nav-links">
+            <!-- Brand Logo -->
+            <div class="brand-logo" aria-label="Apex Sports Hub Brand Logo">
+                ⚡ APEX SPORTS HUB
+            </div>
+
+            <!-- Global Navigation Links -->
+            <nav class="nav-links" aria-label="Main Navigation Menu">
                 <a href="index.html" class="nav-item">📰 News Hub</a>
-                <a href="games.html" class="nav-item active">🎟️ Games & Tickets</a>
+                <a href="games.html" class="nav-item active" aria-current="page">🎟️ Games & Tickets</a>
                 <a href="gm.html" class="nav-item">🎮 GM Franchise</a>
                 <a href="fantasy.html" class="nav-item">📊 Fantasy Trade Grader</a>
             </nav>
         </div>
     </header>
 
+    <!-- ==================================================
+         LIVE TICKER MARQUEE
+    ================================================== -->
+    <div class="ticker-bar" aria-label="Live Scores & Schedule Ticker">
+        <div class="ticker-content" id="live-ticker-text">
+            ⚡ <strong>LIVE SCOREBOARD:</strong> Fetching game clocks, periods, and live matchup scores from ESPN API...
+        </div>
+    </div>
+
+    <!-- ==================================================
+         MAIN PAGE CONTAINER
+    ================================================== -->
     <main class="page-container">
-        <!-- HERO SECTION -->
-        <section class="hero-card">
-            <h1>Live ESPN Scoreboard & Ticket Marketplace</h1>
-            <p>Real-time game scores and period updates powered live by ESPN's public sports API. Compare ticket prices across top marketplaces.</p>
-            <img class="hero-image" src="https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?auto=format&fit=crop&w=1200&q=80" alt="Crowd watching live game in sports arena stadium">
+
+        <!-- HERO SECTION: Live Scores Banner -->
+        <section class="hero-card" aria-labelledby="hero-title">
+            <h1 id="hero-title">Games of the Day & Live Ticket Marketplace</h1>
+            <p>
+                Track real-time scores, period clocks, and venue details powered live by ESPN's public scoreboard API. 
+                Compare live seat entry prices and unlock direct access to verified tickets across major ticket exchanges.
+            </p>
+
+            <!-- Hero Image Banner -->
+            <img class="hero-image" 
+                 src="https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?auto=format&fit=crop&w=1200&q=80" 
+                 alt="Enthusiastic sports crowd cheering inside packed indoor stadium arena" 
+                 loading="eager">
         </section>
 
-        <!-- LEAGUE SELECTOR FOR LIVE SCORES -->
-        <section class="section-card">
-            <h2>Select League Scoreboard</h2>
-            <div class="sport-tabs">
-                <button class="tab-btn active" onclick="fetchLiveESPNScores('nba')">🏀 NBA Live Scores</button>
-                <button class="tab-btn" onclick="fetchLiveESPNScores('mlb')">⚾ MLB Live Scores</button>
-                <button class="tab-btn" onclick="fetchLiveESPNScores('nfl')">🏈 NFL Live Scores</button>
+        <!-- SCOREBOARD LEAGUE SELECTOR TABS -->
+        <section class="section-card" aria-labelledby="scoreboard-select-heading">
+            <h2 id="scoreboard-select-heading">Select League Scoreboard</h2>
+            <p>Switch between professional leagues to display live games, scores, and stadium ticket deals:</p>
+            
+            <div class="sport-tabs" role="tablist" aria-label="Scoreboard League Selector">
+                <button class="tab-btn active" role="tab" aria-selected="true" onclick="fetchLiveESPNScores('nba')">🏀 NBA Live Scores</button>
+                <button class="tab-btn" role="tab" aria-selected="false" onclick="fetchLiveESPNScores('mlb')">⚾ MLB Live Scores</button>
+                <button class="tab-btn" role="tab" aria-selected="false" onclick="fetchLiveESPNScores('nfl')">🏈 NFL Live Scores</button>
             </div>
         </section>
 
-        <!-- DYNAMIC ESPN LIVE GAMES LIST -->
-        <section class="section-card">
-            <h2 id="scoreboard-title">Today's Live Matchups</h2>
+        <!-- DYNAMIC ESPN LIVE GAMES CONTAINER -->
+        <section class="section-card" aria-labelledby="scoreboard-title">
+            <h2 id="scoreboard-title">NBA Live Matchup Scoreboard</h2>
+            
+            <!-- Dynamic List populated via JavaScript fetchLiveESPNScores() -->
             <div id="live-games-container" class="games-list">
-                <p class="loading-text">⏳ Loading live games from ESPN API...</p>
+                
+                <!-- Fallback / Pre-rendered Starter Matchup Card 1 (NBA) -->
+                <article class="game-card">
+                    <div class="game-header">
+                        <span class="badge badge-nba">🏀 NBA BASKETBALL</span>
+                        <span class="status-live">🔴 LIVE - Q4 2:15</span>
+                    </div>
+                    <div class="game-matchup">
+                        <div class="team">Los Angeles Lakers <strong>108</strong></div>
+                        <div class="vs">VS</div>
+                        <div class="team">Boston Celtics <strong>105</strong></div>
+                    </div>
+                    <div class="game-info">
+                        <p>📍 Crypto.com Arena | Los Angeles, CA</p>
+                        <p style="font-size: 13px; color: var(--accent); margin-top: 4px;">⚡ High Demand: Starting from $45</p>
+                    </div>
+                    <div class="ticket-actions">
+                        <a href="https://seatgeek.com/sports-tickets" target="_blank" rel="noopener noreferrer" class="ticket-btn btn-seatgeek">Find Deals on SeatGeek ➔</a>
+                        <a href="https://www.stubhub.com" target="_blank" rel="noopener noreferrer" class="ticket-btn btn-stubhub">Compare on StubHub ➔</a>
+                        <a href="https://www.ticketmaster.com" target="_blank" rel="noopener noreferrer" class="ticket-btn btn-ticketmaster">Buy on Ticketmaster ➔</a>
+                    </div>
+                </article>
+
+                <!-- Fallback / Pre-rendered Starter Matchup Card 2 (MLB) -->
+                <article class="game-card">
+                    <div class="game-header">
+                        <span class="badge badge-mlb">⚾ MLB BASEBALL</span>
+                        <span class="status-final">FINAL</span>
+                    </div>
+                    <div class="game-matchup">
+                        <div class="team">New York Yankees <strong>6</strong></div>
+                        <div class="vs">VS</div>
+                        <div class="team">Los Angeles Dodgers <strong>4</strong></div>
+                    </div>
+                    <div class="game-info">
+                        <p>📍 Yankee Stadium | Bronx, NY</p>
+                        <p style="font-size: 13px; color: var(--success); margin-top: 4px;">🎟️ Next Game Tickets Available: From $28</p>
+                    </div>
+                    <div class="ticket-actions">
+                        <a href="https://seatgeek.com/sports-tickets" target="_blank" rel="noopener noreferrer" class="ticket-btn btn-seatgeek">Find Deals on SeatGeek ➔</a>
+                        <a href="https://www.stubhub.com" target="_blank" rel="noopener noreferrer" class="ticket-btn btn-stubhub">Compare on StubHub ➔</a>
+                        <a href="https://www.ticketmaster.com" target="_blank" rel="noopener noreferrer" class="ticket-btn btn-ticketmaster">Buy on Ticketmaster ➔</a>
+                    </div>
+                </article>
+
+                <!-- Fallback / Pre-rendered Starter Matchup Card 3 (NFL) -->
+                <article class="game-card">
+                    <div class="game-header">
+                        <span class="badge badge-nfl">🏈 NFL FOOTBALL</span>
+                        <span class="status-upcoming">UPCOMING - SUN 4:25 PM EST</span>
+                    </div>
+                    <div class="game-matchup">
+                        <div class="team">Kansas City Chiefs <strong>-</strong></div>
+                        <div class="vs">VS</div>
+                        <div class="team">Philadelphia Eagles <strong>-</strong></div>
+                    </div>
+                    <div class="game-info">
+                        <p>📍 GEHA Field at Arrowhead Stadium | Kansas City, MO</p>
+                        <p style="font-size: 13px; color: var(--primary); margin-top: 4px;">🔥 Prime Time Matchup: Tickets from $120</p>
+                    </div>
+                    <div class="ticket-actions">
+                        <a href="https://seatgeek.com/sports-tickets" target="_blank" rel="noopener noreferrer" class="ticket-btn btn-seatgeek">Find Deals on SeatGeek ➔</a>
+                        <a href="https://www.stubhub.com" target="_blank" rel="noopener noreferrer" class="ticket-btn btn-stubhub">Compare on StubHub ➔</a>
+                        <a href="https://www.ticketmaster.com" target="_blank" rel="noopener noreferrer" class="ticket-btn btn-ticketmaster">Buy on Ticketmaster ➔</a>
+                    </div>
+                </article>
+
             </div>
         </section>
+
+        <!-- MARKETPLACE COMPARISON INDEX TABLE -->
+        <section class="section-card" aria-labelledby="table-title">
+            <h2 id="table-title">Ticket Marketplace Price Index</h2>
+            <p>Cross-platform ticket price tracking showing minimum entry cost for featured upcoming matchups:</p>
+
+            <div style="overflow-x: auto;">
+                <table class="data-table" style="width: 100%; border-collapse: collapse; margin-top: 15px;">
+                    <thead>
+                        <tr>
+                            <th style="padding: 12px; border: 1px solid var(--border-color); background-color: var(--bg-inner); color: var(--primary); text-align: left;">League</th>
+                            <th style="padding: 12px; border: 1px solid var(--border-color); background-color: var(--bg-inner); color: var(--primary); text-align: left;">Featured Matchup</th>
+                            <th style="padding: 12px; border: 1px solid var(--border-color); background-color: var(--bg-inner); color: var(--primary); text-align: left;">SeatGeek Min</th>
+                            <th style="padding: 12px; border: 1px solid var(--border-color); background-color: var(--bg-inner); color: var(--primary); text-align: left;">StubHub Min</th>
+                            <th style="padding: 12px; border: 1px solid var(--border-color); background-color: var(--bg-inner); color: var(--primary); text-align: left;">Ticketmaster Min</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="padding: 12px; border: 1px solid var(--border-color);">🏀 NBA</td>
+                            <td style="padding: 12px; border: 1px solid var(--border-color);">Lakers vs. Celtics</td>
+                            <td style="padding: 12px; border: 1px solid var(--border-color); color: var(--success); font-weight: 700;">$45 (Best Deal)</td>
+                            <td style="padding: 12px; border: 1px solid var(--border-color);">$49</td>
+                            <td style="padding: 12px; border: 1px solid var(--border-color);">$52</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 12px; border: 1px solid var(--border-color);">⚾ MLB</td>
+                            <td style="padding: 12px; border: 1px solid var(--border-color);">Yankees vs. Dodgers</td>
+                            <td style="padding: 12px; border: 1px solid var(--border-color); color: var(--success); font-weight: 700;">$28 (Best Deal)</td>
+                            <td style="padding: 12px; border: 1px solid var(--border-color);">$31</td>
+                            <td style="padding: 12px; border: 1px solid var(--border-color);">$30</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 12px; border: 1px solid var(--border-color);">🏈 NFL</td>
+                            <td style="padding: 12px; border: 1px solid var(--border-color);">Chiefs vs. Eagles</td>
+                            <td style="padding: 12px; border: 1px solid var(--border-color); color: var(--success); font-weight: 700;">$120 (Best Deal)</td>
+                            <td style="padding: 12px; border: 1px solid var(--border-color);">$125</td>
+                            <td style="padding: 12px; border: 1px solid var(--border-color);">$128</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
     </main>
 
-    <footer class="footer">
-        <p>© 2026 Apex Sports Hub. Live Data Powered by ESPN API.</p>
+    <!-- ==================================================
+         FOOTER SECTION
+    ================================================== -->
+    <footer class="footer" role="contentinfo">
+        <p>© 2026 Apex Sports Hub. All Rights Reserved. Built with HTML, CSS, and JavaScript.</p>
+        <p style="font-size: 13px; color: var(--text-muted); margin-top: 6px;">
+            Scoreboard feeds and live game telemetry powered live by ESPN API. Ticket prices subject to vendor availability.
+        </p>
     </footer>
 
+    <!-- External JavaScript File Link -->
     <script src="script.js"></script>
 </body>
 </html>
