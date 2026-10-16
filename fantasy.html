@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Apex Sports Hub | $500M Multi-Sport GM Simulator</title>
+    <title>Apex Sports Hub | Data-Driven Fantasy Trade Grader</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -14,8 +14,8 @@
             <nav class="nav-links">
                 <a href="index.html" class="nav-item">📰 News Hub</a>
                 <a href="games.html" class="nav-item">🎟️ Games & Tickets</a>
-                <a href="gm.html" class="nav-item active">🎮 GM Franchise</a>
-                <a href="fantasy.html" class="nav-item">📊 Fantasy Trade Grader</a>
+                <a href="gm.html" class="nav-item">🎮 GM Franchise</a>
+                <a href="fantasy.html" class="nav-item active">📊 Fantasy Trade Grader</a>
             </nav>
         </div>
     </header>
@@ -23,70 +23,58 @@
     <main class="page-container">
         <!-- HERO SECTION -->
         <section class="hero-card">
-            <h1>🎮 $500M GM Franchise Simulator</h1>
-            <p>Build a championship dynasty under a $500M salary cap! Draft active superstars and legends, execute blockbuster trades, and simulate season performance.</p>
-            <img class="hero-image" src="https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=1200&q=80" alt="Gaming console controller setup">
+            <h1>📊 Data-Driven Fantasy Trade Grader</h1>
+            <p>Analyze fantasy trades like the pros on Flock Fantasy! Evaluates rest-of-season (ROS) player value, positional scarcity, and outputs an instant trade grade.</p>
+            <img class="hero-image" src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1200&q=80" alt="Data analytics charts and fantasy stats on screen">
         </section>
 
         <!-- SPORT SELECTOR TABS -->
         <section class="section-card">
-            <h2>Select Franchise Sport</h2>
+            <h2>Select Fantasy League Sport</h2>
             <div class="sport-tabs">
-                <button class="tab-btn active" onclick="switchGMSport('nba')">🏀 NBA Franchise</button>
-                <button class="tab-btn" onclick="switchGMSport('nfl')">🏈 NFL Franchise</button>
-                <button class="tab-btn" onclick="switchGMSport('mlb')">⚾ MLB Franchise</button>
+                <button class="tab-btn active" onclick="switchFantasySport('nfl')">🏈 NFL Fantasy</button>
+                <button class="tab-btn" onclick="switchFantasySport('nba')">🏀 NBA Fantasy</button>
+                <button class="tab-btn" onclick="switchFantasySport('mlb')">⚾ MLB Fantasy</button>
             </div>
         </section>
 
-        <!-- $500M SALARY CAP TRACKER -->
+        <!-- FANTASY TRADE EVALUATOR -->
         <section class="section-card">
-            <div class="cap-header">
-                <h2>$500M Salary Cap Status (<span id="current-sport-label">NBA</span>)</h2>
-                <div class="cap-counter">
-                    Remaining: <strong id="cap-remaining">$500M</strong> / $500M
+            <h2>Side-by-Side Trade Evaluator</h2>
+            <div class="trade-evaluator-grid">
+                <!-- TEAM A GIVES -->
+                <div class="eval-column">
+                    <h3 class="team-title text-primary">Team A Gives Up</h3>
+                    <select id="fantasy-teamA-p1" class="form-select" onchange="calculateFantasyTrade()"></select>
+                    <select id="fantasy-teamA-p2" class="form-select" onchange="calculateFantasyTrade()"></select>
+                    <div class="value-summary">Total Value: <strong id="val-teamA">0 pts</strong></div>
+                </div>
+
+                <!-- TRADE VS BADGE -->
+                <div class="eval-vs">VS</div>
+
+                <!-- TEAM B GIVES -->
+                <div class="eval-column">
+                    <h3 class="team-title text-accent">Team B Gives Up</h3>
+                    <select id="fantasy-teamB-p1" class="form-select" onchange="calculateFantasyTrade()"></select>
+                    <select id="fantasy-teamB-p2" class="form-select" onchange="calculateFantasyTrade()"></select>
+                    <div class="value-summary">Total Value: <strong id="val-teamB">0 pts</strong></div>
                 </div>
             </div>
-            <div class="progress-bar-bg">
-                <div id="cap-progress-fill" class="progress-bar-fill" style="width: 0%;"></div>
-            </div>
+
+            <button class="btn-primary" onclick="calculateFantasyTrade()" style="width: 100%; margin-top: 20px;">⚡ Analyze Trade Grade Now</button>
         </section>
 
-        <!-- ROSTER DRAFT BOARD -->
+        <!-- TRADE GRADE BREAKDOWN RESULT DISPLAY -->
         <section class="section-card">
-            <h2>Starting Lineup Roster Board</h2>
-            <div id="gm-roster-grid" class="roster-grid">
-                <!-- Dynamically populated by script.js -->
+            <h2>Flock-Style Expert Trade Analysis</h2>
+            <div class="grade-container">
+                <div id="grade-badge" class="grade-badge badge-neutral">GRADED</div>
+                <div id="grade-verdict" class="grade-verdict">Select players above to generate a rest-of-season trade evaluation grade!</div>
             </div>
-            <button id="draft-random-btn" class="btn-secondary" onclick="autoDraftGMRoster()">🎲 Auto-Draft Random $500M Roster</button>
-        </section>
-
-        <!-- INTERACTIVE TRADE MACHINE -->
-        <section class="section-card">
-            <h2>Trade Machine & Player Exchange</h2>
-            <p>Propose a trade between your drafted roster and available trade market assets.</p>
-            <div class="trade-grid">
-                <div class="trade-column">
-                    <h3>Your Roster Asset</h3>
-                    <select id="user-trade-select" class="form-select"></select>
-                </div>
-                <div class="trade-column">
-                    <h3>Available Trade Target</h3>
-                    <select id="target-trade-select" class="form-select"></select>
-                </div>
+            <div id="grade-breakdown-box" class="feedback-box">
+                <p>📊 <strong>Key Metrics Analyzed:</strong> Rest of Season (ROS) Projections, Usage Scarcity Index, Positional Replacement Baseline.</p>
             </div>
-            <button class="btn-primary" onclick="evaluateGMTrade()" style="margin-top: 15px;">🔄 Propose Trade</button>
-            <div id="trade-feedback" class="feedback-box"></div>
-        </section>
-
-        <!-- SEASON SIMULATOR ENGINE -->
-        <section class="section-card">
-            <h2>Season Simulation & Standings</h2>
-            <div class="sim-controls">
-                <button id="sim-10-btn" class="btn-primary" onclick="simulateGMGames(10)" disabled>🚀 Simulate 10 Games</button>
-                <button id="sim-season-btn" class="btn-primary" onclick="simulateGMGames(82)" disabled>🏆 Simulate Full Season</button>
-            </div>
-            <div id="sim-ticker-box" class="sim-ticker" style="display: none;">Ready to simulate...</div>
-            <div id="gm-standings-box" class="feedback-box" style="display: none;"></div>
         </section>
     </main>
 
