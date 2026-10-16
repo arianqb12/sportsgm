@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apex Sports Hub | Games of the Day & Ticket Marketplace</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- GLOBAL NAVIGATION MENU BAR -->
+    <header class="navbar">
+        <div class="nav-container">
+            <div class="brand-logo">⚡ APEX SPORTS HUB</div>
+            <nav class="nav-links">
+                <a href="index.html" class="nav-item">📰 News Hub</a>
+                <a href="games.html" class="nav-item active">🎟️ Games & Tickets</a>
+                <a href="gm.html" class="nav-item">🎮 GM Franchise</a>
+                <a href="fantasy.html" class="nav-item">📊 Fantasy Trade Grader</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="page-container">
+        <!-- HERO SECTION -->
+        <section class="hero-card">
+            <h1>Games of the Day & Live Ticket Marketplace</h1>
+            <p>Track real-time scores, period updates, and compare live ticket deals across verified ticketing platforms.</p>
+            <img class="hero-image" src="https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?auto=format&fit=crop&w=1200&q=80" alt="Crowd watching live game in sports arena stadium">
+        </section>
+
+        <!-- GAMES LIST & TICKET LINK MARKETPLACE -->
+        <section class="section-card">
+            <h2>Today's Featured Matchups</h2>
+            <div class="games-list">
+                <!-- GAME 1: NBA -->
+                <div class="game-card">
+                    <div class="game-header">
+                        <span class="badge badge-nba">🏀 NBA BASKETBALL</span>
+                        <span class="status-live">🔴 LIVE - Q4 2:15</span>
+                    </div>
+                    <div class="game-matchup">
+                        <div class="team">Los Angeles Lakers <strong>108</strong></div>
+                        <div class="vs">VS</div>
+                        <div class="team">Boston Celtics <strong>105</strong></div>
+                    </div>
+                    <div class="game-info">
+                        <p>📍 Crypto.com Arena | Los Angeles, CA</p>
+                        <span class="deal-pill">🔥 Low Price Alert: From $45</span>
+                    </div>
+                    <div class="ticket-actions">
+                        <a href="https://seatgeek.com/sports-tickets" target="_blank" rel="noopener noreferrer" class="ticket-btn btn-seatgeek">Find Cheapest Tickets on SeatGeek ➔</a>
+                        <a href="https://www.stubhub.com" target="_blank" rel="noopener noreferrer" class="ticket-btn btn-stubhub">Compare Prices on StubHub ➔</a>
+                    </div>
+                </div>
+
+                <!-- GAME 2: MLB -->
+                <div class="game-card">
+                    <div class="game-header">
+                        <span class="badge badge-mlb">⚾ MLB BASEBALL</span>
+                        <span class="status-final">FINAL</span>
+                    </div>
+                    <div class="game-matchup">
+                        <div class="team">New York Yankees <strong>6</strong></div>
+                        <div class="vs">VS</div>
+                        <div class="team">Los Angeles Dodgers <strong>4</strong></div>
+                    </div>
+                    <div class="game-info">
+                        <p>📍 Yankee Stadium | Bronx, NY</p>
+                        <span class="deal-pill">🎟️ Next Series Tickets: From $28</span>
+                    </div>
+                    <div class="ticket-actions">
+                        <a href="https://www.ticketmaster.com" target="_blank" rel="noopener noreferrer" class="ticket-btn btn-ticketmaster">Buy Direct Tickets on Ticketmaster ➔</a>
+                        <a href="https://seatgeek.com/sports-tickets" target="_blank" rel="noopener noreferrer" class="ticket-btn btn-seatgeek">Find Deals on SeatGeek ➔</a>
+                    </div>
+                </div>
+
+                <!-- GAME 3: NFL -->
+                <div class="game-card">
+                    <div class="game-header">
+                        <span class="badge badge-nfl">🏈 NFL FOOTBALL</span>
+                        <span class="status-upcoming">UPCOMING - Sun 4:25 PM</span>
+                    </div>
+                    <div class="game-matchup">
+                        <div class="team">Kansas City Chiefs</div>
+                        <div class="vs">VS</div>
+                        <div class="team">Philadelphia Eagles</div>
+                    </div>
+                    <div class="game-info">
+                        <p>📍 GEHA Field at Arrowhead Stadium | Kansas City, MO</p>
+                        <span class="deal-pill">⚡ High Demand: From $120</span>
+                    </div>
+                    <div class="ticket-actions">
+                        <a href="https://www.stubhub.com" target="_blank" rel="noopener noreferrer" class="ticket-btn btn-stubhub">Find Cheapest Tickets on StubHub ➔</a>
+                        <a href="https://www.ticketmaster.com" target="_blank" rel="noopener noreferrer" class="ticket-btn btn-ticketmaster">Check Availability on Ticketmaster ➔</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TICKET PRICE COMPARISON TABLE -->
+        <section class="section-card">
+            <h2>Marketplace Price Comparison Index</h2>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>League</th>
+                        <th>Featured Matchup</th>
+                        <th>SeatGeek Min</th>
+                        <th>StubHub Min</th>
+                        <th>Ticketmaster Min</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>🏀 NBA</td>
+                        <td>Lakers vs. Celtics</td>
+                        <td>$45</td>
+                        <td>$49</td>
+                        <td>$52</td>
+                    </tr>
+                    <tr>
+                        <td>⚾ MLB</td>
+                        <td>Yankees vs. Dodgers</td>
+                        <td>$28</td>
+                        <td>$31</td>
+                        <td>$30</td>
+                    </tr>
+                    <tr>
+                        <td>🏈 NFL</td>
+                        <td>Chiefs vs. Eagles</td>
+                        <td>$120</td>
+                        <td>$125</td>
+                        <td>$128</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>© 2026 Apex Sports Hub. Powered by HTML, CSS, and JavaScript.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
