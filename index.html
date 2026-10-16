@@ -1,18 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Document Metadata & Encoding -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Apex Sports Hub | Daily News & Headlines</title>
+    <meta name="description" content="Apex Sports Hub - Live sports news, ESPN headlines, scores, game tracking, $500M GM Franchise simulator, and data-driven fantasy trade grader.">
+    <meta name="keywords" content="sports, NBA, NFL, MLB, live scores, ESPN API, GM simulator, fantasy sports trade grader, trade calculator">
+    <meta name="author" content="Apex Sports Development Team">
+    
+    <!-- Open Graph Metadata for Social Media Sharing -->
+    <meta property="og:title" content="Apex Sports Hub | Live Headlines & News">
+    <meta property="og:description" content="Your ultimate portal for real-time sports journalism, live scoreboards, GM franchise simulation, and fantasy trade analysis.">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1504450758481-7338eba7524a?auto=format&fit=crop&w=1200&q=80">
+    <meta property="og:type" content="website">
+
+    <!-- Page Title -->
+    <title>Apex Sports Hub | Live Headlines & Breaking News</title>
+
+    <!-- External Style Sheet Link -->
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <!-- GLOBAL NAVIGATION MENU BAR -->
-    <header class="navbar">
+
+    <!-- ==================================================
+         GLOBAL NAVIGATION BAR
+         Consistent header menu present across all pages
+    ================================================== -->
+    <header class="navbar" aria-label="Global Navigation Header">
         <div class="nav-container">
-            <div class="brand-logo">⚡ APEX SPORTS HUB</div>
-            <nav class="nav-links">
-                <a href="index.html" class="nav-item active">📰 News Hub</a>
+            <!-- Brand Logo & Home Link -->
+            <div class="brand-logo" aria-label="Apex Sports Hub Brand Logo">
+                ⚡ APEX SPORTS HUB
+            </div>
+
+            <!-- Global Navigation Links -->
+            <nav class="nav-links" aria-label="Main Navigation Menu">
+                <a href="index.html" class="nav-item active" aria-current="page">📰 News Hub</a>
                 <a href="games.html" class="nav-item">🎟️ Games & Tickets</a>
                 <a href="gm.html" class="nav-item">🎮 GM Franchise</a>
                 <a href="fantasy.html" class="nav-item">📊 Fantasy Trade Grader</a>
@@ -20,85 +43,138 @@
         </div>
     </header>
 
-    <!-- LIVE TICKER MARQUEE -->
-    <div class="ticker-bar">
-        <div class="ticker-content">
-            🔥 <strong>BREAKING:</strong> Blockbuster multi-player trade agreed upon ahead of deadline! &nbsp;&nbsp;|&nbsp;&nbsp;
-            🏀 NBA Championship Odds updated following last night's game &nbsp;&nbsp;|&nbsp;&nbsp;
-            ⚾ MLB Opening Day pitching rotation officially announced &nbsp;&nbsp;|&nbsp;&nbsp;
-            🏈 NFL Draft Combine scouting reports released
+    <!-- ==================================================
+         LIVE BREAKING NEWS TICKER MARQUEE
+         Real-time scrolling headlines powered by ESPN API
+    ================================================== -->
+    <div class="ticker-bar" aria-label="Live Breaking Headlines Marquee Ticker">
+        <div class="ticker-content" id="live-ticker-text">
+            ⚡ <strong>LIVE ESPN FEED:</strong> Loading breaking headlines across NBA, NFL, and MLB...
         </div>
     </div>
 
-    <!-- MAIN CONTENT CONTAINER -->
+    <!-- ==================================================
+         MAIN PAGE CONTAINER
+    ================================================== -->
     <main class="page-container">
-        <!-- HERO SECTION -->
-        <section class="hero-card">
-            <h1>Daily Sports News & Breaking Headlines</h1>
-            <p>Your ultimate destination for real-time coverage across professional basketball, football, and baseball.</p>
-            <img class="hero-image" src="https://images.unsplash.com/photo-1504450758481-7338eba7524a?auto=format&fit=crop&w=1200&q=80" alt="Professional sports stadium arena illuminated at night">
+
+        <!-- HERO SECTION: Welcome & Featured Coverage Banner -->
+        <section class="hero-card" aria-labelledby="hero-title">
+            <h1 id="hero-title">Daily Sports News & Live ESPN Headlines</h1>
+            <p>
+                Welcome to Apex Sports Hub! Your premier interactive portal for real-time sports journalism, 
+                breaking trade updates, live game scoreboards, franchise simulation, and advanced analytics directly 
+                sourced from ESPN's official network feeds.
+            </p>
+
+            <!-- Main Hero Image Banner -->
+            <img class="hero-image" 
+                 src="https://images.unsplash.com/photo-1504450758481-7338eba7524a?auto=format&fit=crop&w=1200&q=80" 
+                 alt="Professional basketball arena court illuminated by stadium lights with full spectator crowd" 
+                 loading="eager">
         </section>
 
-        <!-- NEWS FILTER CONTROLS -->
-        <section class="section-card">
-            <h2>Filter News by League</h2>
-            <div class="filter-buttons">
-                <button class="filter-btn active" onclick="filterNews('all')">All Leagues</button>
-                <button class="filter-btn" onclick="filterNews('nba')">🏀 NBA Basketball</button>
-                <button class="filter-btn" onclick="filterNews('nfl')">🏈 NFL Football</button>
-                <button class="filter-btn" onclick="filterNews('mlb')">⚾ MLB Baseball</button>
+        <!-- CATEGORY FILTER CONTROLS -->
+        <section class="section-card" aria-labelledby="filter-heading">
+            <h2 id="filter-heading">Filter Live News Feed</h2>
+            <p>Select a league below to instantly update the live news stream using ESPN API feeds:</p>
+            <div class="sport-tabs" role="tablist" aria-label="League News Filters">
+                <button class="tab-btn active" role="tab" aria-selected="true" onclick="loadESPNNews('nba')">🏀 NBA Basketball</button>
+                <button class="tab-btn" role="tab" aria-selected="false" onclick="loadESPNNews('nfl')">🏈 NFL Football</button>
+                <button class="tab-btn" role="tab" aria-selected="false" onclick="loadESPNNews('mlb')">⚾ MLB Baseball</button>
             </div>
         </section>
 
-        <!-- NEWS ARTICLES GRID -->
-        <section class="section-card">
-            <h2>Latest Headlines & Game Recaps</h2>
-            <div id="news-grid" class="cards-grid">
-                <!-- NBA News Item -->
-                <article class="content-card news-item nba">
+        <!-- LIVE ESPN NEWS ARTICLES GRID CONTAINER -->
+        <section class="section-card" aria-labelledby="news-section-title">
+            <h2 id="news-section-title">NBA Breaking News Feed</h2>
+            
+            <!-- Dynamic Grid populated via JavaScript script.js -->
+            <div id="espn-news-grid" class="cards-grid">
+                <!-- Pre-rendered Fallback / Loading Cards -->
+                <article class="news-card">
+                    <img src="https://images.unsplash.com/photo-1546519638-68e109498ffc?auto=format&fit=crop&w=600&q=80" alt="Basketball hoop and net in indoor arena">
                     <span class="badge badge-nba">🏀 NBA</span>
                     <h3>Championship Race Heats Up as Playoff Seeds Solidify</h3>
-                    <p class="meta-date">Updated 2 hours ago</p>
                     <p>Top contenders across the Eastern and Western conferences delivered clutch performances in last night's thriller, shifting the postseason matchup picture dramatically.</p>
-                    <a href="https://www.espn.com" target="_blank" rel="noopener noreferrer" class="action-link">Read Full Story on ESPN ➔</a>
+                    <a href="https://www.espn.com/nba/" target="_blank" rel="noopener noreferrer" class="action-link">Read Full Story on ESPN ➔</a>
                 </article>
 
-                <!-- NFL News Item -->
-                <article class="content-card news-item nfl">
+                <article class="news-card">
+                    <img src="https://images.unsplash.com/photo-1566577739112-5180d4bf9390?auto=format&fit=crop&w=600&q=80" alt="American football sitting on turf field under stadium lighting">
                     <span class="badge badge-nfl">🏈 NFL</span>
-                    <h3>Quarterback Trade Rumors Surge Ahead of Free Agency</h3>
-                    <p class="meta-date">Updated 4 hours ago</p>
-                    <p>Front offices are holding high-stakes roster discussions as key franchise quarterbacks prepare to test the free agent market or request offseason trades.</p>
-                    <a href="https://www.cbssports.com" target="_blank" rel="noopener noreferrer" class="action-link">Read Analysis on CBS Sports ➔</a>
+                    <h3>Offseason Trade Rumors & Free Agency Scouting Reports</h3>
+                    <p>Front offices are holding high-stakes roster discussions as key franchise players prepare to test the free agent market or negotiate extension deals.</p>
+                    <a href="https://www.espn.com/nfl/" target="_blank" rel="noopener noreferrer" class="action-link">Read Analysis on ESPN ➔</a>
                 </article>
 
-                <!-- MLB News Item -->
-                <article class="content-card news-item mlb">
+                <article class="news-card">
+                    <img src="https://images.unsplash.com/photo-1508802298132-0545fe5e02c5?auto=format&fit=crop&w=600&q=80" alt="Baseball glove and ball on leather surface on dirt diamond">
                     <span class="badge badge-mlb">⚾ MLB</span>
                     <h3>Ace Pitchers Deliver Masterclass Dominance in Pennant Pursuit</h3>
-                    <p class="meta-date">Updated 6 hours ago</p>
                     <p>Starting rotation stars posted double-digit strikeouts and complete games as division rivals clash in crucial late-season series play.</p>
-                    <a href="https://www.bleacherreport.com" target="_blank" rel="noopener noreferrer" class="action-link">View Highlights on Bleacher Report ➔</a>
+                    <a href="https://www.espn.com/mlb/" target="_blank" rel="noopener noreferrer" class="action-link">View Highlights on ESPN ➔</a>
                 </article>
             </div>
         </section>
 
-        <!-- LEAGUE STANDINGS QUICK SUMMARY LIST -->
-        <section class="section-card">
-            <h2>Division Power Rankings</h2>
-            <ul class="rankings-list">
-                <li><strong>1. Eastern Conference Leaders:</strong> 48 Wins - 14 Losses (.774 PCT)</li>
-                <li><strong>2. Western Conference Leaders:</strong> 46 Wins - 16 Losses (.742 PCT)</li>
-                <li><strong>3. NFL Division Champions:</strong> 13 Wins - 4 Losses (.765 PCT)</li>
-                <li><strong>4. MLB League Leaders:</strong> 98 Wins - 64 Losses (.605 PCT)</li>
-            </ul>
+        <!-- LEAGUE DIVISION POWER RANKINGS SECTION -->
+        <section class="section-card" aria-labelledby="rankings-title">
+            <h2 id="rankings-title">League Power Rankings & Division Leaders</h2>
+            <p>Current top-ranked franchises across major professional sports leagues based on winning percentage and point differential:</p>
+            
+            <div class="cards-grid">
+                <!-- NBA Power Ranking Card -->
+                <article class="news-card">
+                    <span class="badge badge-nba">🏀 NBA POWER RANKINGS</span>
+                    <h3>1. Eastern Conference Leaders</h3>
+                    <p><strong>Record:</strong> 48 Wins - 14 Losses (.774 Win PCT)</p>
+                    <p>Dominating with an elite 118.5 offensive rating and top-tier perimeter defense down the stretch.</p>
+                </article>
+
+                <!-- NFL Power Ranking Card -->
+                <article class="news-card">
+                    <span class="badge badge-nfl">🏈 NFL POWER RANKINGS</span>
+                    <h3>1. Super Bowl Contenders</h3>
+                    <p><strong>Record:</strong> 14 Wins - 3 Losses (.824 Win PCT)</p>
+                    <p>Boasting a league-leading red zone efficiency and +14 turnover margin throughout the season.</p>
+                </article>
+
+                <!-- MLB Power Ranking Card -->
+                <article class="news-card">
+                    <span class="badge badge-mlb">⚾ MLB POWER RANKINGS</span>
+                    <h3>1. Pennant Favorites</h3>
+                    <p><strong>Record:</strong> 98 Wins - 64 Losses (.605 Win PCT)</p>
+                    <p>Featuring a powerhouse lineup with over 220 combined team home runs and a 3.12 team ERA.</p>
+                </article>
+            </div>
         </section>
+
+        <!-- BREAKING NEWS ALERTS SUBSCRIPTION FORM -->
+        <section class="section-card" aria-labelledby="subscribe-title">
+            <h2 id="subscribe-title">📩 Subscribe to Instant Trade & Score Alerts</h2>
+            <p>Get instant breaking news notifications, trade updates, and ticket price drops delivered directly to your inbox:</p>
+            
+            <form id="newsletter-form" class="add-player-row" onsubmit="event.preventDefault(); alert('Thank you for subscribing to Apex Sports Hub breaking alerts!'); this.reset();">
+                <input type="email" class="form-input" style="flex: 1; margin-bottom: 0;" placeholder="Enter your email address (e.g. fan@apexsports.com)" required aria-label="Email address input for breaking news alerts">
+                <button type="submit" class="btn-primary">🔔 Subscribe Now</button>
+            </form>
+        </section>
+
     </main>
 
-    <footer class="footer">
-        <p>© 2026 Apex Sports Hub. Powered by HTML, CSS, and JavaScript.</p>
+    <!-- ==================================================
+         FOOTER SECTION
+         Copyright information, links, and API attribution
+    ================================================== -->
+    <footer class="footer" role="contentinfo">
+        <p>© 2026 Apex Sports Hub. All Rights Reserved. Built with HTML, CSS, and JavaScript.</p>
+        <p style="font-size: 13px; color: var(--text-muted); margin-top: 6px;">
+            Live sports news feeds, scoreboards, and team statistics powered live by ESPN Public API.
+        </p>
     </footer>
 
+    <!-- External JavaScript File Link -->
     <script src="script.js"></script>
 </body>
 </html>
