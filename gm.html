@@ -4,36 +4,27 @@
     <!-- Document Metadata & Encoding -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Apex Sports Hub - $500M Multi-Sport GM Franchise Simulator for NBA (82 Games), NFL (17 Games), and MLB (162 Games). Manage salary cap, draft players, execute trades, and simulate season performance.">
-    <meta name="keywords" content="GM simulator, franchise mode, $500M salary cap, sports management, 82-0 basketball simulator, NBA GM, NFL GM, MLB GM, roster builder, trade machine">
+    <meta name="description" content="Apex Sports Hub - Undefeated Franchise Simulator for NBA (82 Games), NFL (17 Games), and MLB (162 Games). Build your dream lineup with any player in existence and chase a 100% perfect season.">
+    <meta name="keywords" content="sports simulator, 82-0 basketball simulator, 17-0 football simulator, 162-0 baseball simulator, dream team builder, NBA GM, NFL GM, MLB GM">
     <meta name="author" content="Apex Sports Development Team">
     
-    <!-- Open Graph Metadata for Social Media Sharing -->
-    <meta property="og:title" content="Apex Sports Hub | $500M GM Franchise Simulator">
-    <meta property="og:description" content="Build your ultimate dynasty team under a $500M salary cap! Draft stars, make trades, and simulate full seasons.">
+    <!-- Open Graph Metadata -->
+    <meta property="og:title" content="Apex Sports Hub | Undefeated Franchise Simulator">
+    <meta property="og:description" content="Assemble any 5-player roster in existence and simulate full seasons to reach 82-0, 17-0, or 162-0 perfection!">
     <meta property="og:image" content="https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=1200&q=80">
     <meta property="og:type" content="website">
 
-    <!-- Page Title -->
-    <title>Apex Sports Hub | $500M Multi-Sport GM Franchise Simulator</title>
-
-    <!-- External Style Sheet Link -->
+    <title>Apex Sports Hub | Undefeated Franchise Simulator</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-    <!-- ==================================================
-         GLOBAL NAVIGATION BAR
-         Consistent header menu present across all pages
-    ================================================== -->
+    <!-- GLOBAL NAVIGATION BAR -->
     <header class="navbar" aria-label="Global Navigation Header">
         <div class="nav-container">
-            <!-- Brand Logo -->
             <div class="brand-logo" aria-label="Apex Sports Hub Brand Logo">
                 ⚡ APEX SPORTS HUB
             </div>
-
-            <!-- Global Navigation Links -->
             <nav class="nav-links" aria-label="Main Navigation Menu">
                 <a href="index.html" class="nav-item">📰 News Hub</a>
                 <a href="games.html" class="nav-item">🎟️ Games & Tickets</a>
@@ -43,63 +34,39 @@
         </div>
     </header>
 
-    <!-- ==================================================
-         LIVE TICKER MARQUEE
-    ================================================== -->
+    <!-- LIVE TICKER MARQUEE -->
     <div class="ticker-bar" aria-label="Franchise Mode Live Ticker">
         <div class="ticker-content" id="live-ticker-text">
-            🎮 <strong>FRANCHISE SIMULATOR READY:</strong> Select a sport below, manage your $500M salary cap, and chase an undefeated season!
+            🎮 <strong>UNDEFEATED SIMULATOR READY:</strong> Search any active star or legend, assemble your starting lineup, and chase a perfect season!
         </div>
     </div>
 
-    <!-- ==================================================
-         MAIN PAGE CONTAINER
-    ================================================== -->
+    <!-- MAIN PAGE CONTAINER -->
     <main class="page-container">
 
-        <!-- HERO SECTION: GM Franchise Mode Banner -->
+        <!-- HERO SECTION -->
         <section class="hero-card" aria-labelledby="hero-title">
-            <h1 id="hero-title">🎮 $500M Multi-Sport GM Franchise Mode</h1>
+            <h1 id="hero-title">🎮 Undefeated Franchise Season Simulator</h1>
             <p>
-                Take total operational control of a professional sports franchise! Draft your 5-star starting lineup 
-                under a strict $500M salary cap limit. Search active superstars and legends, execute roster trades, 
-                and run high-speed game-by-game season simulations across basketball, football, and baseball.
+                Can you build an unbeatably dominant squad? Assemble a 5-player starting lineup with 
+                <strong>any active player, rookie, or all-time legend</strong> across basketball, football, and baseball. 
+                Simulate game-by-game to see if your squad can achieve an undefeated run (<strong>82-0</strong> NBA, <strong>17-0</strong> NFL, or <strong>162-0</strong> MLB)!
             </p>
-
-            <!-- Hero Image Banner -->
             <img class="hero-image" 
                  src="https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=1200&q=80" 
-                 alt="Gaming setup with illuminated console controllers and screen" 
+                 alt="Gaming setup with illuminated console controllers" 
                  loading="eager">
         </section>
 
         <!-- FRANCHISE LEAGUE SELECTOR -->
         <section class="section-card" aria-labelledby="franchise-select-heading">
             <h2 id="franchise-select-heading">Select Franchise League</h2>
-            <p>Choose your sport below to load league-specific positions, databases, and season game lengths:</p>
+            <p>Choose your sport below to load position requirements and target season lengths:</p>
             
             <div class="sport-tabs" role="tablist" aria-label="GM Franchise League Selector">
-                <button class="tab-btn active" role="tab" aria-selected="true" onclick="switchGMSport('nba')">🏀 NBA Franchise (82 Games)</button>
-                <button class="tab-btn" role="tab" aria-selected="false" onclick="switchGMSport('nfl')">🏈 NFL Franchise (17 Games)</button>
-                <button class="tab-btn" role="tab" aria-selected="false" onclick="switchGMSport('mlb')">⚾ MLB Franchise (162 Games)</button>
-            </div>
-        </section>
-
-        <!-- $500M SALARY CAP TRACKER CARD -->
-        <section class="section-card" aria-labelledby="cap-heading">
-            <div class="cap-header">
-                <h2 id="cap-heading">$500M Salary Cap Tracker (<span id="current-sport-label">NBA</span>)</h2>
-                <div class="cap-counter" aria-live="polite">
-                    Remaining Cap: <strong id="cap-remaining" class="text-success">$500M</strong> / $500M
-                </div>
-            </div>
-            <p style="font-size: 14px; color: var(--text-muted); margin-top: 6px;">
-                You must keep your total 5-player starting roster payroll below $500M to remain cap compliant.
-            </p>
-            
-            <!-- Salary Cap Progress Bar -->
-            <div class="progress-bar-bg" aria-label="Salary Cap Usage Progress Bar">
-                <div id="cap-progress-fill" class="progress-bar-fill" style="width: 0%;"></div>
+                <button class="tab-btn active" role="tab" aria-selected="true" onclick="switchGMSport('nba', this)">🏀 NBA Basketball (82 Games)</button>
+                <button class="tab-btn" role="tab" aria-selected="false" onclick="switchGMSport('nfl', this)">🏈 NFL Football (17 Games)</button>
+                <button class="tab-btn" role="tab" aria-selected="false" onclick="switchGMSport('mlb', this)">⚾ MLB Baseball (162 Games)</button>
             </div>
         </section>
 
@@ -109,108 +76,38 @@
         <!-- DRAFT PLAYER SEARCH & AUTO-DRAFT CONTROLS -->
         <section class="section-card" aria-labelledby="draft-heading">
             <h2 id="draft-heading">Draft Player to Roster</h2>
-            <p>Type a specific player's name or click auto-draft to randomly generate a competitive $500M lineup:</p>
+            <p>Type any player's name in existence (active stars, obscure players, or legends) or click auto-draft to assemble a starting lineup:</p>
             
             <div class="add-player-row">
                 <input type="text" 
                        id="gm-search-input" 
                        class="form-input" 
                        list="all-players-list" 
-                       placeholder="Type player name (e.g. Steph Curry, Patrick Mahomes, Shohei Ohtani)..." 
-                       aria-label="Search and select player name to draft">
+                       placeholder="Search any player (e.g. Steph Curry, Patrick Mahomes, Shohei Ohtani, Michael Jordan)..." 
+                       aria-label="Search player name to draft">
                 <button class="btn-primary" onclick="addSearchedPlayerToRoster()">➕ Draft Player</button>
-                <button class="btn-secondary" onclick="autoDraftGMRoster()">🎲 Auto-Draft $500M Squad</button>
+                <button class="btn-secondary" onclick="autoDraftGMRoster()">🎲 Auto-Draft Lineup</button>
             </div>
         </section>
 
         <!-- POSITION-LOCKED ROSTER DISPLAY BOARD -->
         <section class="section-card" aria-labelledby="roster-heading">
-            <h2 id="roster-heading">Starting Lineup Roster Board</h2>
-            <p>Your current active starting five. Click 'Remove' or 'Draw' on an individual slot to adjust position assets:</p>
+            <h2 id="roster-heading">Starting Lineup Roster Board (<span id="current-sport-label">NBA</span>)</h2>
+            <p>Your active starting lineup. Click 'Roll' on any position card to re-roll that slot, or search above to replace a player:</p>
 
-            <!-- Dynamic Grid populated via JavaScript updateGMRosterUI() -->
             <div id="gm-roster-grid" class="roster-grid">
-                
-                <!-- Fallback / Pre-rendered Starter Position Cards -->
-                <article class="gm-slot-card">
-                    <strong>PG</strong>
-                    <div style="font-weight: 700; margin: 4px 0;">Steph Curry</div>
-                    <small>96 OVR | $110M</small>
-                    <button class="btn-secondary" style="width: 100%; margin-top: 8px; font-size: 11px; padding: 4px;" onclick="draftSinglePosition('PG')">🎲 Roll PG</button>
-                </article>
-
-                <article class="gm-slot-card">
-                    <strong>SG</strong>
-                    <div style="font-weight: 700; margin: 4px 0;">Michael Jordan</div>
-                    <small>99 OVR | $135M</small>
-                    <button class="btn-secondary" style="width: 100%; margin-top: 8px; font-size: 11px; padding: 4px;" onclick="draftSinglePosition('SG')">🎲 Roll SG</button>
-                </article>
-
-                <article class="gm-slot-card">
-                    <strong>SF</strong>
-                    <div style="font-weight: 700; margin: 4px 0;">LeBron James</div>
-                    <small>98 OVR | $125M</small>
-                    <button class="btn-secondary" style="width: 100%; margin-top: 8px; font-size: 11px; padding: 4px;" onclick="draftSinglePosition('SF')">🎲 Roll SF</button>
-                </article>
-
-                <article class="gm-slot-card">
-                    <strong>PF</strong>
-                    <div style="font-weight: 700; margin: 4px 0;">Giannis Antetokounmpo</div>
-                    <small>97 OVR | $115M</small>
-                    <button class="btn-secondary" style="width: 100%; margin-top: 8px; font-size: 11px; padding: 4px;" onclick="draftSinglePosition('PF')">🎲 Roll PF</button>
-                </article>
-
-                <article class="gm-slot-card">
-                    <strong>C</strong>
-                    <div style="font-weight: 700; margin: 4px 0;">Nikola Jokic</div>
-                    <small>98 OVR | $120M</small>
-                    <button class="btn-secondary" style="width: 100%; margin-top: 8px; font-size: 11px; padding: 4px;" onclick="draftSinglePosition('C')">🎲 Roll C</button>
-                </article>
-
-            </div>
-        </section>
-
-        <!-- INTERACTIVE FRANCHISE TRADE MACHINE -->
-        <section class="section-card" aria-labelledby="trade-machine-heading">
-            <h2 id="trade-machine-heading">Interactive Franchise Trade Machine</h2>
-            <p>Propose a trade between an active player on your roster and an incoming target player:</p>
-
-            <div class="trade-grid">
-                <!-- User Roster Asset Selection -->
-                <div class="trade-column">
-                    <h3>Select Your Player to Trade Away</h3>
-                    <select id="user-trade-select" class="form-select" aria-label="Select player to trade away"></select>
-                </div>
-
-                <!-- Target Acquisition Input -->
-                <div class="trade-column">
-                    <h3>Search Target Acquisition</h3>
-                    <input type="text" 
-                           id="target-trade-input" 
-                           class="form-input" 
-                           list="all-players-list" 
-                           placeholder="Search target player to acquire..." 
-                           aria-label="Search target player to acquire in trade">
-                </div>
-            </div>
-
-            <button class="btn-primary" onclick="evaluateGMTrade()" style="margin-top: 15px;">🔄 Execute Franchise Trade</button>
-
-            <!-- Feedback Box -->
-            <div id="trade-feedback" class="feedback-box" aria-live="polite">
-                Trade proposals will be validated against salary cap limits and team roster constraints.
+                <!-- Dynamically populated via script.js -->
             </div>
         </section>
 
         <!-- SEASON SIMULATOR ENGINE & TICKER -->
         <section class="section-card" aria-labelledby="sim-heading">
-            <h2 id="sim-heading">Franchise Season Simulator Engine</h2>
-            <p>Simulate games sequentially to test your roster's win-loss percentage and target an undefeated season:</p>
+            <h2 id="sim-heading">Season Simulation Engine</h2>
+            <p>Simulate games sequentially to test your roster's chemistry and chase perfection:</p>
 
-            <!-- Sim Action Controls -->
             <div class="sim-controls" style="display: flex; gap: 10px; flex-wrap: wrap;">
                 <button id="sim-10-btn" class="btn-primary" onclick="simulateGMGames(10)">🚀 Simulate 10 Games</button>
-                <button id="sim-season-btn" class="btn-primary" onclick="simulateGMGames(82)">🏆 Simulate Full Season</button>
+                <button id="sim-season-btn" class="btn-primary" onclick="simulateGMGames(82)">🏆 Simulate Full Season (82 Games)</button>
             </div>
 
             <!-- Simulation Live Progress Bar -->
@@ -225,19 +122,17 @@
 
             <!-- Final Season Standings Card -->
             <div id="gm-standings-box" class="feedback-box" style="display: none; margin-top: 15px;" aria-live="polite">
-                <!-- Dynamically populated via JS showFinalResult() -->
+                <!-- Dynamically populated via JS -->
             </div>
         </section>
 
     </main>
 
-    <!-- ==================================================
-         FOOTER SECTION
-    ================================================== -->
+    <!-- FOOTER -->
     <footer class="footer" role="contentinfo">
         <p>© 2026 Apex Sports Hub. All Rights Reserved. Built with HTML, CSS, and JavaScript.</p>
         <p style="font-size: 13px; color: var(--text-muted); margin-top: 6px;">
-            $500M GM Franchise Mode modeled with position-locked roster slots, trade evaluation, and game-by-game simulation logic.
+            Undefeated Franchise Mode modeled with position-locked roster slots and game-by-game probability simulation logic.
         </p>
     </footer>
 
