@@ -1,19 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Document Metadata & Encoding -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Apex Sports Hub - Undefeated Franchise Simulator for NBA (82 Games), NFL (17 Games), and MLB (162 Games). Build your dream lineup with any player in existence and chase a 100% perfect season.">
-    <meta name="keywords" content="sports simulator, 82-0 basketball simulator, 17-0 football simulator, 162-0 baseball simulator, dream team builder, NBA GM, NFL GM, MLB GM">
-    <meta name="author" content="Apex Sports Development Team">
-    
-    <!-- Open Graph Metadata -->
-    <meta property="og:title" content="Apex Sports Hub | Undefeated Franchise Simulator">
-    <meta property="og:description" content="Assemble any 5-player roster in existence and simulate full seasons to reach 82-0, 17-0, or 162-0 perfection!">
-    <meta property="og:image" content="https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=1200&q=80">
-    <meta property="og:type" content="website">
-
     <title>Apex Sports Hub | Undefeated Franchise Simulator</title>
     <link rel="stylesheet" href="styles.css">
 </head>
@@ -37,7 +27,7 @@
     <!-- LIVE TICKER MARQUEE -->
     <div class="ticker-bar" aria-label="Franchise Mode Live Ticker">
         <div class="ticker-content" id="live-ticker-text">
-            🎮 <strong>UNDEFEATED SIMULATOR READY:</strong> Search any active star or legend, assemble your starting lineup, and chase a perfect season!
+            🎮 <strong>UNDEFEATED SIMULATOR READY:</strong> Switch sports below, draft any active player or legend, and chase a perfect season!
         </div>
     </div>
 
@@ -48,8 +38,8 @@
         <section class="hero-card" aria-labelledby="hero-title">
             <h1 id="hero-title">🎮 Undefeated Franchise Season Simulator</h1>
             <p>
-                Can you build an unbeatably dominant squad? Assemble a 5-player starting lineup with 
-                <strong>any active player, rookie, or all-time legend</strong> across basketball, football, and baseball. 
+                Assemble a 5-player starting lineup with 
+                <strong>every active player, bench reserve, or legend in existence</strong> across basketball, football, and baseball. 
                 Simulate game-by-game to see if your squad can achieve an undefeated run (<strong>82-0</strong> NBA, <strong>17-0</strong> NFL, or <strong>162-0</strong> MLB)!
             </p>
             <img class="hero-image" 
@@ -61,29 +51,29 @@
         <!-- FRANCHISE LEAGUE SELECTOR -->
         <section class="section-card" aria-labelledby="franchise-select-heading">
             <h2 id="franchise-select-heading">Select Franchise League</h2>
-            <p>Choose your sport below to load position requirements and target season lengths:</p>
+            <p>Select your league to switch player databases, starting positions, and season lengths:</p>
             
             <div class="sport-tabs" role="tablist" aria-label="GM Franchise League Selector">
-                <button class="tab-btn active" role="tab" aria-selected="true" onclick="switchGMSport('nba', this)">🏀 NBA Basketball (82 Games)</button>
-                <button class="tab-btn" role="tab" aria-selected="false" onclick="switchGMSport('nfl', this)">🏈 NFL Football (17 Games)</button>
-                <button class="tab-btn" role="tab" aria-selected="false" onclick="switchGMSport('mlb', this)">⚾ MLB Baseball (162 Games)</button>
+                <button id="gm-tab-nba" class="tab-btn active" role="tab" aria-selected="true" onclick="switchGMSport('nba', this)">🏀 NBA Basketball (82 Games)</button>
+                <button id="gm-tab-nfl" class="tab-btn" role="tab" aria-selected="false" onclick="switchGMSport('nfl', this)">🏈 NFL Football (17 Games)</button>
+                <button id="gm-tab-mlb" class="tab-btn" role="tab" aria-selected="false" onclick="switchGMSport('mlb', this)">⚾ MLB Baseball (162 Games)</button>
             </div>
         </section>
 
         <!-- GLOBAL DATALIST FOR PLAYER SEARCH AUTOCOMPLETE -->
         <datalist id="all-players-list"></datalist>
 
-        <!-- DRAFT PLAYER SEARCH & AUTO-DRAFT CONTROLS -->
+        <!-- DRAFT PLAYER SEARCH CONTROLS -->
         <section class="section-card" aria-labelledby="draft-heading">
             <h2 id="draft-heading">Draft Player to Roster</h2>
-            <p>Type any player's name in existence (active stars, obscure players, or legends) or click auto-draft to assemble a starting lineup:</p>
+            <p>Type any player's name in existence (active stars, bench depth, or legends) or click auto-draft:</p>
             
             <div class="add-player-row">
                 <input type="text" 
                        id="gm-search-input" 
                        class="form-input" 
                        list="all-players-list" 
-                       placeholder="Search any player (e.g. Steph Curry, Patrick Mahomes, Shohei Ohtani, Michael Jordan)..." 
+                       placeholder="Type any player name (e.g. Steph Curry, Patrick Mahomes, Shohei Ohtani, Michael Jordan)..." 
                        aria-label="Search player name to draft">
                 <button class="btn-primary" onclick="addSearchedPlayerToRoster()">➕ Draft Player</button>
                 <button class="btn-secondary" onclick="autoDraftGMRoster()">🎲 Auto-Draft Lineup</button>
@@ -100,7 +90,7 @@
             </div>
         </section>
 
-        <!-- SEASON SIMULATOR ENGINE & TICKER -->
+        <!-- SEASON SIMULATOR ENGINE -->
         <section class="section-card" aria-labelledby="sim-heading">
             <h2 id="sim-heading">Season Simulation Engine</h2>
             <p>Simulate games sequentially to test your roster's chemistry and chase perfection:</p>
