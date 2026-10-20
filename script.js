@@ -1,56 +1,152 @@
 /* ==========================================================================
-   APEX SPORTS HUB - MASTER INTERACTIVE LOGIC & ESPN API CONTROLLER
+   APEX SPORTS HUB - MASTER INTERACTIVE LOGIC & FANTASY STAT ENGINE
    ========================================================================== */
 
-/* 1. MASTER PLAYER & DRAFT PICK DATABASE */
-const masterPlayerDatabase = {
+/* --------------------------------------------------------------------------
+   1. MASTER PLAYER & LEGENDS DATABASE
+   -------------------------------------------------------------------------- */
+let masterPlayerDatabase = {
     nba: [
-        { name: "Steph Curry", pos: "PG", ovr: 96, salary: 110, val: 95 },
-        { name: "LeBron James", pos: "SF", ovr: 98, salary: 125, val: 97 },
-        { name: "Michael Jordan", pos: "SG", ovr: 99, salary: 135, val: 99 },
-        { name: "Nikola Jokic", pos: "C", ovr: 98, salary: 120, val: 98 },
-        { name: "Giannis Antetokounmpo", pos: "PF", ovr: 97, salary: 115, val: 96 },
-        { name: "Luka Doncic", pos: "PG", ovr: 96, salary: 110, val: 96 },
-        { name: "Kobe Bryant", pos: "SG", ovr: 97, salary: 120, val: 97 },
-        { name: "Kevin Durant", pos: "SF", ovr: 96, salary: 110, val: 94 },
-        { name: "Anthony Edwards", pos: "SG", ovr: 93, salary: 85, val: 91 },
-        { name: "Shai Gilgeous-Alexander", pos: "PG", ovr: 95, salary: 95, val: 94 },
-        { name: "Jayson Tatum", pos: "SF", ovr: 94, salary: 90, val: 92 },
-        { name: "Victor Wembanyama", pos: "C", ovr: 93, salary: 75, val: 93 },
-        { name: "Kareem Abdul-Jabbar", pos: "C", ovr: 98, salary: 130, val: 98 },
-        { name: "Magic Johnson", pos: "PG", ovr: 97, salary: 125, val: 97 },
-        { name: "Larry Bird", pos: "SF", ovr: 96, salary: 120, val: 96 },
-        { name: "2026 Early 1st Round Pick", pos: "PICK", ovr: 88, salary: 45, val: 88 }
+        { name: "Steph Curry", pos: "PG", ovr: 96, salary: 110, val: 95, rank: "PG1", fppg: 48.5 },
+        { name: "LeBron James", pos: "SF", ovr: 98, salary: 125, val: 97, rank: "SF1", fppg: 50.2 },
+        { name: "Michael Jordan", pos: "SG", ovr: 99, salary: 135, val: 99, rank: "SG1 (LEGEND)", fppg: 58.0 },
+        { name: "Nikola Jokic", pos: "C", ovr: 98, salary: 120, val: 98, rank: "C1", fppg: 59.4 },
+        { name: "Giannis Antetokounmpo", pos: "PF", ovr: 97, salary: 115, val: 96, rank: "PF1", fppg: 52.8 },
+        { name: "Luka Doncic", pos: "PG", ovr: 96, salary: 110, val: 96, rank: "PG2", fppg: 54.1 },
+        { name: "Kobe Bryant", pos: "SG", ovr: 97, salary: 120, val: 97, rank: "SG1 (LEGEND)", fppg: 53.5 },
+        { name: "Kevin Durant", pos: "SF", ovr: 96, salary: 110, val: 94, rank: "SF2", fppg: 47.3 },
+        { name: "Anthony Edwards", pos: "SG", ovr: 93, salary: 85, val: 91, rank: "SG2", fppg: 43.0 },
+        { name: "Shai Gilgeous-Alexander", pos: "PG", ovr: 95, salary: 95, val: 94, rank: "PG3", fppg: 51.0 },
+        { name: "Jayson Tatum", pos: "SF", ovr: 94, salary: 90, val: 92, rank: "SF3", fppg: 46.2 },
+        { name: "Victor Wembanyama", pos: "C", ovr: 93, salary: 75, val: 93, rank: "C2", fppg: 49.8 },
+        { name: "Kareem Abdul-Jabbar", pos: "C", ovr: 98, salary: 130, val: 98, rank: "C (LEGEND)", fppg: 55.0 },
+        { name: "Magic Johnson", pos: "PG", ovr: 97, salary: 125, val: 97, rank: "PG (LEGEND)", fppg: 54.0 },
+        { name: "Larry Bird", pos: "SF", ovr: 96, salary: 120, val: 96, rank: "SF (LEGEND)", fppg: 52.0 },
+        { name: "Shaquille O'Neal", pos: "C", ovr: 97, salary: 125, val: 96, rank: "C (LEGEND)", fppg: 53.0 },
+        { name: "Tim Duncan", pos: "PF", ovr: 96, salary: 115, val: 95, rank: "PF (LEGEND)", fppg: 50.0 }
     ],
     nfl: [
-        { name: "Patrick Mahomes", pos: "QB", ovr: 99, salary: 140, val: 99 },
-        { name: "Justin Jefferson", pos: "WR", ovr: 98, salary: 120, val: 98 },
-        { name: "Christian McCaffrey", pos: "RB", ovr: 97, salary: 110, val: 96 },
-        { name: "CeeDee Lamb", pos: "WR", ovr: 96, salary: 105, val: 95 },
-        { name: "Tyreek Hill", pos: "WR", ovr: 96, salary: 105, val: 94 },
-        { name: "Lamar Jackson", pos: "QB", ovr: 96, salary: 125, val: 95 },
-        { name: "Josh Allen", pos: "QB", ovr: 95, salary: 120, val: 94 },
-        { name: "Travis Kelce", pos: "TE", ovr: 94, salary: 85, val: 90 },
-        { name: "Breece Hall", pos: "RB", ovr: 92, salary: 80, val: 89 },
-        { name: "San Francisco 49ers", pos: "DEF", ovr: 92, salary: 60, val: 85 },
-        { name: "Tom Brady", pos: "QB", ovr: 99, salary: 135, val: 98 },
-        { name: "Jerry Rice", pos: "WR", ovr: 99, salary: 130, val: 98 },
-        { name: "2026 Early 1st Round Pick", pos: "PICK", ovr: 88, salary: 45, val: 89 }
+        { name: "Patrick Mahomes", pos: "QB", ovr: 99, salary: 140, val: 99, rank: "QB1", fppg: 22.5 },
+        { name: "Justin Jefferson", pos: "WR", ovr: 98, salary: 120, val: 98, rank: "WR1", fppg: 19.8 },
+        { name: "Christian McCaffrey", pos: "RB", ovr: 97, salary: 110, val: 96, rank: "RB1", fppg: 21.4 },
+        { name: "CeeDee Lamb", pos: "WR", ovr: 96, salary: 105, val: 95, rank: "WR2", fppg: 18.9 },
+        { name: "Tyreek Hill", pos: "WR", ovr: 96, salary: 105, val: 94, rank: "WR3", fppg: 18.2 },
+        { name: "Lamar Jackson", pos: "QB", ovr: 96, salary: 125, val: 95, rank: "QB2", fppg: 21.8 },
+        { name: "Josh Allen", pos: "QB", ovr: 95, salary: 120, val: 94, rank: "QB3", fppg: 22.1 },
+        { name: "Travis Kelce", pos: "TE", ovr: 94, salary: 85, val: 90, rank: "TE1", fppg: 14.2 },
+        { name: "Breece Hall", pos: "RB", ovr: 92, salary: 80, val: 89, rank: "RB2", fppg: 16.5 },
+        { name: "Ja'Marr Chase", pos: "WR", ovr: 95, salary: 100, val: 94, rank: "WR4", fppg: 17.8 },
+        { name: "Tom Brady", pos: "QB", ovr: 99, salary: 135, val: 98, rank: "QB (LEGEND)", fppg: 22.0 },
+        { name: "Jerry Rice", pos: "WR", ovr: 99, salary: 130, val: 98, rank: "WR (LEGEND)", fppg: 20.0 },
+        { name: "Barry Sanders", pos: "RB", ovr: 98, salary: 125, val: 97, rank: "RB (LEGEND)", fppg: 21.0 },
+        { name: "2026 Early 1st Round Pick", pos: "PICK", ovr: 88, salary: 45, val: 89, rank: "PICK 1.01", fppg: 0 }
     ],
     mlb: [
-        { name: "Shohei Ohtani", pos: "DH", ovr: 99, salary: 150, val: 99 },
-        { name: "Aaron Judge", pos: "OF", ovr: 97, salary: 125, val: 97 },
-        { name: "Ronald Acuña Jr.", pos: "OF", ovr: 96, salary: 115, val: 95 },
-        { name: "Mookie Betts", pos: "IF", ovr: 95, salary: 110, val: 94 },
-        { name: "Gerrit Cole", pos: "SP", ovr: 94, salary: 95, val: 92 },
-        { name: "Juan Soto", pos: "OF", ovr: 95, salary: 110, val: 94 },
-        { name: "Babe Ruth", pos: "OF", ovr: 99, salary: 140, val: 99 },
-        { name: "Derek Jeter", pos: "IF", ovr: 95, salary: 100, val: 93 },
-        { name: "2026 Early 1st Round Pick", pos: "PICK", ovr: 86, salary: 40, val: 85 }
+        { name: "Shohei Ohtani", pos: "DH", ovr: 99, salary: 150, val: 99, rank: "DH1/P1", fppg: 12.8 },
+        { name: "Aaron Judge", pos: "OF", ovr: 97, salary: 125, val: 97, rank: "OF1", fppg: 11.5 },
+        { name: "Ronald Acuña Jr.", pos: "OF", ovr: 96, salary: 115, val: 95, rank: "OF2", fppg: 11.2 },
+        { name: "Mookie Betts", pos: "IF", ovr: 95, salary: 110, val: 94, rank: "2B1/SS1", fppg: 10.4 },
+        { name: "Gerrit Cole", pos: "SP", ovr: 94, salary: 95, val: 92, rank: "SP1", fppg: 18.5 },
+        { name: "Juan Soto", pos: "OF", ovr: 95, salary: 110, val: 94, rank: "OF3", fppg: 10.8 },
+        { name: "Babe Ruth", pos: "OF", ovr: 99, salary: 140, val: 99, rank: "OF (LEGEND)", fppg: 13.0 },
+        { name: "Derek Jeter", pos: "IF", ovr: 95, salary: 100, val: 93, rank: "SS (LEGEND)", fppg: 10.5 },
+        { name: "Ken Griffey Jr.", pos: "OF", ovr: 97, salary: 120, val: 96, rank: "OF (LEGEND)", fppg: 11.8 }
     ]
 };
 
-/* 2. SAFE TAB HIGHLIGHT HELPER */
+/* --------------------------------------------------------------------------
+   2. LIVE ESPN ACTIVE TEAM ROSTER API FETCH ENGINE (NBA, NFL, MLB)
+   -------------------------------------------------------------------------- */
+async function loadESPNActiveRosters() {
+    const leagues = [
+        { key: 'nba', path: 'basketball/nba' },
+        { key: 'nfl', path: 'football/nfl' },
+        { key: 'mlb', path: 'baseball/mlb' }
+    ];
+
+    for (let league of leagues) {
+        try {
+            console.log(`Fetching active ${league.key.toUpperCase()} team rosters from ESPN API...`);
+            const res = await fetch(`https://site.api.espn.com/apis/site/v2/sports/${league.path}/teams?limit=100`);
+            if (!res.ok) continue;
+            const data = await res.json();
+
+            if (data.sports && data.sports[0].leagues[0].teams) {
+                const teams = data.sports[0].leagues[0].teams;
+                let fetchedPlayers = [];
+
+                teams.forEach(tObj => {
+                    const team = tObj.team;
+                    if (team.athletes) {
+                        team.athletes.forEach(a => {
+                            fetchedPlayers.push({
+                                name: a.fullName,
+                                pos: a.position ? a.position.abbreviation : "FLEX",
+                                ovr: 80 + (Math.abs(a.fullName.length * 3) % 18),
+                                salary: 25 + (Math.abs(a.fullName.length * 5) % 90),
+                                val: 65 + (Math.abs(a.fullName.length * 4) % 30),
+                                rank: `${a.position ? a.position.abbreviation : 'POS'}${Math.floor(Math.random() * 30) + 1}`,
+                                fppg: (12 + (Math.abs(a.fullName.length) % 15)).toFixed(1)
+                            });
+                        });
+                    }
+                });
+
+                if (fetchedPlayers.length > 0) {
+                    masterPlayerDatabase[league.key] = masterPlayerDatabase[league.key].concat(fetchedPlayers);
+                    console.log(`Added ${fetchedPlayers.length} active ${league.key.toUpperCase()} players to database!`);
+                }
+            }
+        } catch (err) {
+            console.warn(`ESPN Active Roster API fetch skipped for ${league.key}:`, err);
+        }
+    }
+}
+
+/* --------------------------------------------------------------------------
+   3. SLEEPER FANTASY API INTEGRATION (NFL)
+   -------------------------------------------------------------------------- */
+async function loadSleeperNFLPlayers() {
+    try {
+        console.log("Fetching Sleeper NFL Fantasy Player Database...");
+        const response = await fetch("https://api.sleeper.app/v1/players/nfl");
+        if (!response.ok) throw new Error("Failed to fetch Sleeper players");
+        const playersData = await response.json();
+
+        let sleeperList = [];
+        for (let id in playersData) {
+            const p = playersData[id];
+            if (p.full_name && p.position && (p.status === "Active" || p.search_rank < 1200)) {
+                const searchRank = p.search_rank || 9999;
+                let estimatedVal = Math.max(10, Math.round(100 - (searchRank / 15)));
+                let ovr = Math.max(65, Math.round(99 - (searchRank / 30)));
+                let salary = Math.max(15, Math.round(140 - (searchRank / 10)));
+                let fppg = Math.max(2.0, (estimatedVal / 5).toFixed(1));
+
+                sleeperList.push({
+                    name: p.full_name,
+                    pos: p.position,
+                    ovr: ovr,
+                    salary: salary,
+                    val: estimatedVal,
+                    rank: `${p.position}${Math.max(1, Math.round(searchRank / 20))}`,
+                    fppg: parseFloat(fppg)
+                });
+            }
+        }
+
+        if (sleeperList.length > 0) {
+            masterPlayerDatabase.nfl = masterPlayerDatabase.nfl.concat(sleeperList);
+            console.log(`Loaded Sleeper API NFL player database!`);
+        }
+    } catch (err) {
+        console.warn("Sleeper API offline:", err);
+    }
+}
+
+/* --------------------------------------------------------------------------
+   4. SAFE TAB HIGHLIGHT HELPER
+   -------------------------------------------------------------------------- */
 function updateActiveTab(containerEl, targetBtn, sportKey) {
     if (!containerEl) return;
     const tabs = containerEl.querySelectorAll('.tab-btn');
@@ -64,18 +160,63 @@ function updateActiveTab(containerEl, targetBtn, sportKey) {
     }
 }
 
-/* 3. GLOBAL AUTOCOMPLETE DATALIST */
-function populateGlobalDatalist(sport = 'nba') {
+/* --------------------------------------------------------------------------
+   5. GLOBAL AUTOCOMPLETE DATALIST POPULATOR
+   -------------------------------------------------------------------------- */
+function populateGlobalDatalist(sport = 'nfl') {
     const list = document.getElementById('all-players-list');
     if (!list) return;
 
     const pool = masterPlayerDatabase[sport] || [];
-    list.innerHTML = pool.map(p => 
-        `<option value="${p.name}">${p.pos} | ${p.ovr} OVR | $${p.salary}M | Val: ${p.val} pts</option>`
+    const topPool = pool.slice(0, 2000); // Efficient rendering cap for fast UI
+
+    list.innerHTML = topPool.map(p => 
+        `<option value="${p.name}">${p.pos} | ${p.rank || 'Rank --'} | Val: ${p.val} pts | ${p.fppg || 0} FPPG</option>`
     ).join('');
 }
 
-/* 4. LIVE ESPN NEWS API WITH FALLBACK ENGINE */
+/* --------------------------------------------------------------------------
+   6. DYNAMIC ANY-PLAYER STAT & RANK ENGINE FOR UNLISTED / CUSTOM PLAYERS
+   -------------------------------------------------------------------------- */
+function getOrGeneratePlayer(name, sport = 'nfl') {
+    if (!name || name.trim() === "") return null;
+
+    const pool = masterPlayerDatabase[sport] || [];
+    const searchName = name.trim().toLowerCase();
+    const match = pool.find(p => p.name.toLowerCase() === searchName);
+
+    if (match) return match;
+
+    // AI Deterministic Estimator Engine for any player in existence
+    let hash = 0;
+    for (let i = 0; i < searchName.length; i++) {
+        hash = searchName.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    
+    const generatedVal = 60 + (Math.abs(hash) % 31);
+    const generatedOvr = 75 + (Math.abs(hash) % 20);
+    const generatedSalary = 30 + (Math.abs(hash) % 70);
+    const generatedFPPG = (generatedVal / 5.2).toFixed(1);
+
+    let defaultPos = "FLEX";
+    if (sport === 'nfl') defaultPos = ["WR", "RB", "QB", "TE"][Math.abs(hash) % 4];
+    if (sport === 'nba') defaultPos = ["PG", "SG", "SF", "PF", "C"][Math.abs(hash) % 5];
+    if (sport === 'mlb') defaultPos = ["OF", "IF", "SP", "C", "DH"][Math.abs(hash) % 5];
+
+    return {
+        name: name.trim(),
+        pos: defaultPos,
+        ovr: generatedOvr,
+        salary: generatedSalary,
+        val: generatedVal,
+        rank: `${defaultPos}${Math.max(1, 40 - Math.round(generatedVal / 2.5))}`,
+        fppg: parseFloat(generatedFPPG)
+    };
+}
+
+/* --------------------------------------------------------------------------
+   7. LIVE ESPN NEWS FEED API INTEGRATION
+   -------------------------------------------------------------------------- */
 async function loadESPNNews(sportKey = 'nba', btnEl = null) {
     const grid = document.getElementById('espn-news-grid');
     const title = document.getElementById('news-section-title');
@@ -107,7 +248,7 @@ async function loadESPNNews(sportKey = 'nba', btnEl = null) {
 
             data.articles.slice(0, 6).forEach(art => {
                 const headline = art.headline || "Breaking Sports Headline";
-                const desc = art.description || "Read complete game breakdown and trade analysis on ESPN.";
+                const desc = art.description || "Read complete game breakdown on ESPN.";
                 const imgUrl = (art.images && art.images.length > 0) ? art.images[0].url : "https://images.unsplash.com/photo-1504450758481-7338eba7524a?auto=format&fit=crop&w=600&q=80";
                 const link = (art.links && art.links.web) ? art.links.web.href : "https://www.espn.com";
 
@@ -119,7 +260,7 @@ async function loadESPNNews(sportKey = 'nba', btnEl = null) {
                         <span class="badge badge-${sportKey}">${sportKey.toUpperCase()}</span>
                         <h3>${headline}</h3>
                         <p>${desc}</p>
-                        <a href="${link}" target="_blank" rel="noopener noreferrer" class="action-link">Read Full Story on ESPN ➔</a>
+                        <a href="${link}" target="_blank" rel="noopener noreferrer" class="action-link">Read Story on ESPN ➔</a>
                     </article>
                 `;
             });
@@ -130,7 +271,7 @@ async function loadESPNNews(sportKey = 'nba', btnEl = null) {
             return;
         }
     } catch (err) {
-        console.warn("ESPN API fetch failed, displaying live fallback feed:", err);
+        console.warn("ESPN News API fallback triggered:", err);
     }
 
     renderFallbackNews(sportKey, grid, title, tickerText);
@@ -139,12 +280,12 @@ async function loadESPNNews(sportKey = 'nba', btnEl = null) {
 function renderFallbackNews(sportKey, grid, title, tickerText) {
     const fallbackData = {
         nba: [
-            { title: "Championship Race Heats Up Ahead of Playoff Deadline", desc: "Top contenders in the East and West secured crucial victories in last night's action, reshaping postseason standings.", img: "https://images.unsplash.com/photo-1546519638-68e109498ffc?auto=format&fit=crop&w=600&q=80" },
+            { title: "Championship Race Heats Up Ahead of Playoff Deadline", desc: "Top contenders in the East and West secured crucial victories in last night's action.", img: "https://images.unsplash.com/photo-1546519638-68e109498ffc?auto=format&fit=crop&w=600&q=80" },
             { title: "Superstar Guard Drops 48 Points in Clutch OT Thriller", desc: "A career-high scoring performance powered a dramatic fourth-quarter comeback victory.", img: "https://images.unsplash.com/photo-1519861531473-9200262188bf?auto=format&fit=crop&w=600&q=80" }
         ],
         nfl: [
-            { title: "Offseason Trade Rumors & Free Agency Scouting Reports", desc: "Front offices are holding high-stakes roster discussions as marquee quarterbacks prepare for contract negotiations.", img: "https://images.unsplash.com/photo-1566577739112-5180d4bf9390?auto=format&fit=crop&w=600&q=80" },
-            { title: "Draft Combine Leaders Shatter 40-Yard Dash Records", desc: "Rookie prospects impressed scouts with elite speed and athletic measurements in individual drills.", img: "https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=600&q=80" }
+            { title: "Offseason Trade Rumors & Free Agency Scouting Reports", desc: "Front offices hold high-stakes discussions as franchise players prepare for extension deals.", img: "https://images.unsplash.com/photo-1566577739112-5180d4bf9390?auto=format&fit=crop&w=600&q=80" },
+            { title: "Draft Combine Leaders Shatter 40-Yard Dash Records", desc: "Rookie prospects impressed scouts with elite speed and athletic measurements in drills.", img: "https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=600&q=80" }
         ],
         mlb: [
             { title: "Ace Pitchers Strike Out 14 in Dominant Complete Game", desc: "Starting rotation aces posted dominant performances as division rivals clash in critical series play.", img: "https://images.unsplash.com/photo-1508802298132-0545fe5e02c5?auto=format&fit=crop&w=600&q=80" },
@@ -171,7 +312,9 @@ function renderFallbackNews(sportKey, grid, title, tickerText) {
     }
 }
 
-/* 5. LIVE ESPN SCOREBOARD API WITH FALLBACK ENGINE */
+/* --------------------------------------------------------------------------
+   8. LIVE ESPN SCOREBOARD API INTEGRATION
+   -------------------------------------------------------------------------- */
 async function fetchLiveESPNScores(sportKey = 'nba', btnEl = null) {
     const container = document.getElementById('live-games-container');
     const title = document.getElementById('scoreboard-title');
@@ -236,7 +379,7 @@ async function fetchLiveESPNScores(sportKey = 'nba', btnEl = null) {
             return;
         }
     } catch (err) {
-        console.warn("ESPN Scoreboard API fetch failed, displaying live fallback scoreboard:", err);
+        console.warn("ESPN Scoreboard fallback triggered:", err);
     }
 
     renderFallbackScores(sportKey, container);
@@ -291,7 +434,9 @@ function renderFallbackScores(sportKey, container) {
     });
 }
 
-/* 6. 82-0.com STYLE GM FRANCHISE ENGINE */
+/* --------------------------------------------------------------------------
+   9. 82-0.com STYLE GM FRANCHISE ENGINE (NBA, NFL, MLB)
+   -------------------------------------------------------------------------- */
 let currentGMSport = 'nba';
 let userGMRoster = [];
 
@@ -325,15 +470,20 @@ function switchGMSport(sport, btnEl = null) {
 
 function draftSinglePosition(pos) {
     const pool = masterPlayerDatabase[currentGMSport].filter(p => p.pos === pos || p.pos === "FLEX");
-    if (pool.length === 0) return;
+    let targetPlayer;
 
-    const randomPlayer = pool[Math.floor(Math.random() * pool.length)];
+    if (pool.length > 0) {
+        targetPlayer = pool[Math.floor(Math.random() * pool.length)];
+    } else {
+        targetPlayer = getOrGeneratePlayer(`${pos} Star`, currentGMSport);
+    }
+    
     const existingIdx = userGMRoster.findIndex(p => p.requiredPos === pos);
     
     if (existingIdx !== -1) {
-        userGMRoster[existingIdx] = { ...randomPlayer, requiredPos: pos };
+        userGMRoster[existingIdx] = { ...targetPlayer, requiredPos: pos };
     } else {
-        userGMRoster.push({ ...randomPlayer, requiredPos: pos });
+        userGMRoster.push({ ...targetPlayer, requiredPos: pos });
     }
 
     updateGMRosterUI();
@@ -344,11 +494,9 @@ function autoDraftGMRoster() {
     userGMRoster = [];
 
     required.forEach(pos => {
-        const pool = masterPlayerDatabase[currentGMSport].filter(p => p.pos === pos || p.pos === "FLEX" || p.pos === "PICK");
-        if (pool.length > 0) {
-            const randomPlayer = pool[Math.floor(Math.random() * pool.length)];
-            userGMRoster.push({ ...randomPlayer, requiredPos: pos });
-        }
+        const pool = masterPlayerDatabase[currentGMSport].filter(p => p.pos === pos || p.pos === "FLEX");
+        let player = pool.length > 0 ? pool[Math.floor(Math.random() * pool.length)] : getOrGeneratePlayer(`${pos} Legend`, currentGMSport);
+        userGMRoster.push({ ...player, requiredPos: pos });
     });
 
     updateGMRosterUI();
@@ -359,12 +507,7 @@ function addSearchedPlayerToRoster() {
     if (!input || !input.value.trim()) return;
 
     const name = input.value.trim();
-    const pool = masterPlayerDatabase[currentGMSport];
-    let match = pool.find(p => p.name.toLowerCase() === name.toLowerCase());
-
-    if (!match) {
-        match = { name: name, pos: "FLEX", ovr: 90, salary: 85 };
-    }
+    const match = getOrGeneratePlayer(name, currentGMSport);
 
     let currentSalary = userGMRoster.reduce((sum, p) => sum + p.salary, 0);
     if (currentSalary + match.salary > 500) {
@@ -442,9 +585,7 @@ function evaluateGMTrade() {
     const userIdx = select.value;
     const userP = userGMRoster[userIdx];
     const targetName = targetInput.value.trim();
-
-    const pool = masterPlayerDatabase[currentGMSport];
-    let targetP = pool.find(p => p.name.toLowerCase() === targetName.toLowerCase()) || { name: targetName, pos: "FLEX", ovr: 91, salary: 85 };
+    const targetP = getOrGeneratePlayer(targetName, currentGMSport);
 
     userGMRoster[userIdx] = targetP;
     targetInput.value = '';
@@ -539,19 +680,11 @@ function showFinalSeasonResult(wins, losses, totalGames, avgOvr) {
     }
 }
 
-/* 7. FLOCK FANTASY TRADE GRADER LOGIC */
+/* --------------------------------------------------------------------------
+   10. FLOCK FANTASY AI TRADE GRADER ENGINE (NFL ONLY)
+   -------------------------------------------------------------------------- */
 let currentFantasySport = 'nfl';
 let formatSettings = { dynasty: true, ppr: true };
-
-function switchFantasySport(sport, btnEl = null) {
-    currentFantasySport = sport;
-    const card = document.getElementById('grade-badge')?.closest('.section-card');
-    const tabContainer = card ? card.previousElementSibling : document;
-    updateActiveTab(tabContainer, btnEl, sport);
-
-    populateGlobalDatalist(sport);
-    calculateFantasyTrade();
-}
 
 function toggleFormatSetting(setting) {
     if (setting === 'dynasty') {
@@ -566,41 +699,50 @@ function toggleFormatSetting(setting) {
     calculateFantasyTrade();
 }
 
-function getPlayerValueByName(name) {
-    if (!name || name.trim() === "") return 0;
-    const pool = masterPlayerDatabase[currentFantasySport] || [];
-    const match = pool.find(p => p.name.toLowerCase() === name.trim().toLowerCase());
-    
-    let baseVal = match ? match.val : 80;
-    if (!formatSettings.dynasty && name.includes("Pick")) baseVal *= 0.35;
-    if (formatSettings.ppr && match && (match.pos === "WR" || match.pos === "RB")) baseVal *= 1.08;
-    return Math.round(baseVal);
-}
-
 function calculateFantasyTrade() {
-    const a1 = getPlayerValueByName(document.getElementById('fantasy-input-A1')?.value);
-    const a2 = getPlayerValueByName(document.getElementById('fantasy-input-A2')?.value);
-    const a3 = getPlayerValueByName(document.getElementById('fantasy-input-A3')?.value);
+    const inputA1 = document.getElementById('fantasy-input-A1')?.value;
+    const inputA2 = document.getElementById('fantasy-input-A2')?.value;
+    const inputA3 = document.getElementById('fantasy-input-A3')?.value;
 
-    const b1 = getPlayerValueByName(document.getElementById('fantasy-input-B1')?.value);
-    const b2 = getPlayerValueByName(document.getElementById('fantasy-input-B2')?.value);
-    const b3 = getPlayerValueByName(document.getElementById('fantasy-input-B3')?.value);
+    const inputB1 = document.getElementById('fantasy-input-B1')?.value;
+    const inputB2 = document.getElementById('fantasy-input-B2')?.value;
+    const inputB3 = document.getElementById('fantasy-input-B3')?.value;
 
-    const arrA = [a1, a2, a3].filter(v => v > 0);
-    const arrB = [b1, b2, b3].filter(v => v > 0);
+    const pA1 = getOrGeneratePlayer(inputA1, 'nfl');
+    const pA2 = getOrGeneratePlayer(inputA2, 'nfl');
+    const pA3 = getOrGeneratePlayer(inputA3, 'nfl');
 
-    let rawA = arrA.reduce((sum, v) => sum + v, 0);
-    let rawB = arrB.reduce((sum, v) => sum + v, 0);
+    const pB1 = getOrGeneratePlayer(inputB1, 'nfl');
+    const pB2 = getOrGeneratePlayer(inputB2, 'nfl');
+    const pB3 = getOrGeneratePlayer(inputB3, 'nfl');
 
-    const maxA = arrA.length ? Math.max(...arrA) : 0;
-    const maxB = arrB.length ? Math.max(...arrB) : 0;
+    const teamAPlayers = [pA1, pA2, pA3].filter(p => p !== null);
+    const teamBPlayers = [pB1, pB2, pB3].filter(p => p !== null);
 
-    let adjustedA = rawA;
-    let adjustedB = rawB;
+    let valA = teamAPlayers.reduce((sum, p) => sum + p.val, 0);
+    let valB = teamBPlayers.reduce((sum, p) => sum + p.val, 0);
 
-    if (maxA > maxB && arrB.length > 1) {
+    // Format Adjustments
+    if (!formatSettings.dynasty) {
+        teamAPlayers.forEach(p => { if (p.name.includes("Pick")) valA *= 0.3; });
+        teamBPlayers.forEach(p => { if (p.name.includes("Pick")) valB *= 0.3; });
+    }
+
+    if (formatSettings.ppr) {
+        teamAPlayers.forEach(p => { if (p.pos === "WR" || p.pos === "RB") valA *= 1.08; });
+        teamBPlayers.forEach(p => { if (p.pos === "WR" || p.pos === "RB") valB *= 1.08; });
+    }
+
+    // Stud Tax Penalty
+    const maxValA = teamAPlayers.length ? Math.max(...teamAPlayers.map(p => p.val)) : 0;
+    const maxValB = teamBPlayers.length ? Math.max(...teamBPlayers.map(p => p.val)) : 0;
+
+    let adjustedA = valA;
+    let adjustedB = valB;
+
+    if (maxValA > maxValB && teamBPlayers.length > 1) {
         adjustedB *= 0.88;
-    } else if (maxB > maxA && arrA.length > 1) {
+    } else if (maxValB > maxValA && teamAPlayers.length > 1) {
         adjustedA *= 0.88;
     }
 
@@ -616,7 +758,7 @@ function calculateFantasyTrade() {
 
     if (!badge) return;
 
-    if (rawA === 0 && rawB === 0) {
+    if (teamAPlayers.length === 0 && teamBPlayers.length === 0) {
         badge.className = "grade-badge badge-neutral";
         badge.textContent = "EVEN";
         verdict.textContent = "Type player names above to calculate trade value differential!";
@@ -652,19 +794,31 @@ function calculateFantasyTrade() {
         verdict.textContent = "WIN FOR TEAM B. Team B receives higher rest-of-season value density.";
     }
 
+    const teamAStats = teamAPlayers.map(p => `${p.name} (${p.rank || 'Rank --'} | ${p.fppg || 0} FPPG)`).join(', ');
+    const teamBStats = teamBPlayers.map(p => `${p.name} (${p.rank || 'Rank --'} | ${p.fppg || 0} FPPG)`).join(', ');
+
     breakdown.innerHTML = `
-        <p>📊 <strong>Flock Analysis Summary (${currentFantasySport.toUpperCase()} - ${formatSettings.dynasty ? 'Dynasty' : 'Redraft'}):</strong></p>
+        <p>📊 <strong>Flock Stat Breakdown (NFL - ${formatSettings.dynasty ? 'Dynasty' : 'Redraft'}):</strong></p>
         <ul>
-            <li>Team A Adjusted Density Value: <strong>${Math.round(adjustedA)} pts</strong></li>
-            <li>Team B Adjusted Density Value: <strong>${Math.round(adjustedB)} pts</strong></li>
-            <li>Package Value Differential: <strong>${Math.abs(Math.round(diff))} pts</strong></li>
-            <li>Stud Tax Applied: <strong>${(maxA > maxB && arrB.length > 1) ? "Team B Package Penalty (-12%)" : (maxB > maxA && arrA.length > 1) ? "Team A Package Penalty (-12%)" : "None"}</strong></li>
+            <li><strong>Team A Asset Ranks & Stats:</strong> ${teamAStats || 'None'}</li>
+            <li><strong>Team B Asset Ranks & Stats:</strong> ${teamBStats || 'None'}</li>
+            <li><strong>Net Adjusted Differential:</strong> ${Math.abs(Math.round(diff))} pts</li>
+            <li><strong>Stud Tax Applied:</strong> ${(maxValA > maxValB && teamBPlayers.length > 1) ? "Team B Depth Package Penalty (-12%)" : (maxValB > maxA && teamAPlayers.length > 1) ? "Team A Depth Package Penalty (-12%)" : "None"}</li>
         </ul>
     `;
 }
 
-/* 8. SAFE DOM LOAD INITIALIZER */
-document.addEventListener('DOMContentLoaded', () => {
+/* --------------------------------------------------------------------------
+   11. SAFE DOM LOAD INITIALIZER
+   -------------------------------------------------------------------------- */
+document.addEventListener('DOMContentLoaded', async () => {
+    // 1. Fetch active team rosters across ESPN (NBA, NFL, MLB)
+    await loadESPNActiveRosters();
+    
+    // 2. Fetch Sleeper API (~10,000 NFL fantasy players)
+    await loadSleeperNFLPlayers();
+
+    // 3. Initialize page components
     if (document.getElementById('espn-news-grid')) {
         loadESPNNews('nba');
     }
