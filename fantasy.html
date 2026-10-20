@@ -4,18 +4,18 @@
     <!-- Document Metadata & Encoding -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Apex Sports Hub - Data-Driven Fantasy Trade Grader modeled after Flock Fantasy and KeepTradeCut. Analyze multi-player trades, rest-of-season projections, and stud premium package penalties across NFL, NBA, and MLB.">
-    <meta name="keywords" content="fantasy trade grader, trade calculator, Flock Fantasy, KeepTradeCut, fantasy football, fantasy basketball, fantasy baseball, dynasty trade calculator, ROS value, stud tax">
+    <meta name="description" content="Apex Sports Hub - Data-Driven NFL Fantasy Trade Grader modeled after Flock Fantasy and KeepTradeCut. Analyze multi-player trades, rest-of-season projections, and stud premium package penalties for NFL fantasy football.">
+    <meta name="keywords" content="fantasy trade grader, trade calculator, Flock Fantasy, KeepTradeCut, fantasy football, dynasty trade calculator, ROS value, stud tax, NFL">
     <meta name="author" content="Apex Sports Development Team">
     
     <!-- Open Graph Metadata for Social Media Sharing -->
-    <meta property="og:title" content="Apex Sports Hub | Data-Driven Fantasy Trade Grader">
-    <meta property="og:description" content="Evaluate fantasy trade packages instantly! Modeled after professional trade engines with positional scarcity and stud tax penalties.">
+    <meta property="og:title" content="Apex Sports Hub | Data-Driven NFL Fantasy Trade Grader">
+    <meta property="og:description" content="Evaluate NFL fantasy trade packages instantly! Modeled after professional trade engines with positional scarcity and stud tax penalties.">
     <meta property="og:image" content="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1200&q=80">
     <meta property="og:type" content="website">
 
     <!-- Page Title -->
-    <title>Apex Sports Hub | Data-Driven Fantasy Trade Grader</title>
+    <title>Apex Sports Hub | Data-Driven NFL Fantasy Trade Grader</title>
 
     <!-- External Style Sheet Link -->
     <link rel="stylesheet" href="styles.css">
@@ -24,16 +24,12 @@
 
     <!-- ==================================================
          GLOBAL NAVIGATION BAR
-         Consistent header menu present across all pages
     ================================================== -->
     <header class="navbar" aria-label="Global Navigation Header">
         <div class="nav-container">
-            <!-- Brand Logo -->
             <div class="brand-logo" aria-label="Apex Sports Hub Brand Logo">
                 ⚡ APEX SPORTS HUB
             </div>
-
-            <!-- Global Navigation Links -->
             <nav class="nav-links" aria-label="Main Navigation Menu">
                 <a href="index.html" class="nav-item">📰 News Hub</a>
                 <a href="games.html" class="nav-item">🎟️ Games & Tickets</a>
@@ -48,7 +44,7 @@
     ================================================== -->
     <div class="ticker-bar" aria-label="Fantasy Trade Grader Ticker">
         <div class="ticker-content" id="live-ticker-text">
-            📊 <strong>FLOCK-STYLE TRADE ENGINE READY:</strong> Search player names, adjust Dynasty/Redraft settings, and analyze rest-of-season package values!
+            📊 <strong>FLOCK-STYLE NFL TRADE ENGINE READY:</strong> Search any active NFL player or draft pick, adjust Dynasty/Redraft settings, and analyze package density values!
         </div>
     </div>
 
@@ -57,37 +53,31 @@
     ================================================== -->
     <main class="page-container">
 
-        <!-- HERO SECTION: Fantasy Trade Grader Banner -->
+        <!-- HERO SECTION -->
         <section class="hero-card" aria-labelledby="hero-title">
-            <h1 id="hero-title">📊 Data-Driven Fantasy Trade Grader</h1>
+            <h1 id="hero-title">📊 Data-Driven NFL Fantasy Trade Grader</h1>
             <p>
-                Evaluate complex multi-player fantasy trade packages like the industry pros! Modeled after 
-                <strong>Flock Fantasy</strong> and <strong>KeepTradeCut</strong> trade engines. Type any player name 
-                or draft pick below to analyze Rest-Of-Season (ROS) projections, positional scarcity, 
-                and automatic stud-premium package density penalties.
+                Evaluate complex multi-player NFL fantasy trade packages like the industry pros! Modeled after 
+                <strong>Flock Fantasy</strong> and <strong>KeepTradeCut</strong> trade engines. Search any active NFL player, rookie, 
+                or draft pick below to analyze Rest-Of-Season (ROS) projections, positional scarcity, and automatic stud-premium package density penalties.
             </p>
-
-            <!-- Hero Image Banner -->
             <img class="hero-image" 
                  src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1200&q=80" 
-                 alt="Data analytics dashboard displaying financial graphs, trade charts, and performance metrics" 
+                 alt="Data analytics dashboard displaying performance metrics" 
                  loading="eager">
         </section>
 
-        <!-- LEAGUE & FORMAT SETTINGS CONTROLS -->
+        <!-- FORMAT SETTINGS CONTROLS -->
         <section class="section-card" aria-labelledby="format-heading">
-            <h2 id="format-heading">League Format & Sport Settings</h2>
+            <h2 id="format-heading">NFL League Format & Scoring Settings</h2>
             <p>Customize your fantasy league format settings to dynamically calibrate player market values:</p>
 
             <div class="settings-control-bar">
-                <!-- League Sport Selector Tabs -->
-                <div class="sport-tabs" role="tablist" aria-label="Fantasy League Sport Selector">
-                    <button class="tab-btn active" role="tab" aria-selected="true" onclick="switchFantasySport('nfl')">🏈 NFL Fantasy</button>
-                    <button class="tab-btn" role="tab" aria-selected="false" onclick="switchFantasySport('nba')">🏀 NBA Fantasy</button>
-                    <button class="tab-btn" role="tab" aria-selected="false" onclick="switchFantasySport('mlb')">⚾ MLB Fantasy</button>
+                <div class="sport-tabs">
+                    <button class="tab-btn active" role="tab" aria-selected="true">🏈 NFL Fantasy Football</button>
                 </div>
 
-                <!-- Format Toggles (Dynasty / Redraft & Scoring Rules) -->
+                <!-- Format Toggles -->
                 <div class="format-toggles" aria-label="League Format Toggles">
                     <button id="toggle-league-type" class="toggle-pill" onclick="toggleFormatSetting('dynasty')" aria-label="Toggle Dynasty or Redraft Format">Format: <span>Dynasty</span></button>
                     <button id="toggle-scoring-type" class="toggle-pill" onclick="toggleFormatSetting('scoring')" aria-label="Toggle Scoring Format">Scoring: <span>Full PPR</span></button>
@@ -113,7 +103,7 @@
                            id="fantasy-input-A1" 
                            class="form-input" 
                            list="all-players-list" 
-                           placeholder="Search Player / Pick 1 (e.g. Justin Jefferson)..." 
+                           placeholder="Search NFL Player / Pick 1 (e.g. Justin Jefferson)..." 
                            oninput="calculateFantasyTrade()"
                            aria-label="Team A Asset Input 1">
                            
@@ -121,7 +111,7 @@
                            id="fantasy-input-A2" 
                            class="form-input" 
                            list="all-players-list" 
-                           placeholder="Search Player / Pick 2 (Optional)..." 
+                           placeholder="Search NFL Player / Pick 2 (Optional)..." 
                            oninput="calculateFantasyTrade()"
                            aria-label="Team A Asset Input 2">
                            
@@ -129,7 +119,7 @@
                            id="fantasy-input-A3" 
                            class="form-input" 
                            list="all-players-list" 
-                           placeholder="Search Player / Pick 3 (Optional)..." 
+                           placeholder="Search NFL Player / Pick 3 (Optional)..." 
                            oninput="calculateFantasyTrade()"
                            aria-label="Team A Asset Input 3">
 
@@ -149,7 +139,7 @@
                            id="fantasy-input-B1" 
                            class="form-input" 
                            list="all-players-list" 
-                           placeholder="Search Player / Pick 1 (e.g. Christian McCaffrey)..." 
+                           placeholder="Search NFL Player / Pick 1 (e.g. Christian McCaffrey)..." 
                            oninput="calculateFantasyTrade()"
                            aria-label="Team B Asset Input 1">
                            
@@ -157,7 +147,7 @@
                            id="fantasy-input-B2" 
                            class="form-input" 
                            list="all-players-list" 
-                           placeholder="Search Player / Pick 2 (Optional)..." 
+                           placeholder="Search NFL Player / Pick 2 (Optional)..." 
                            oninput="calculateFantasyTrade()"
                            aria-label="Team B Asset Input 2">
                            
@@ -165,7 +155,7 @@
                            id="fantasy-input-B3" 
                            class="form-input" 
                            list="all-players-list" 
-                           placeholder="Search Player / Pick 3 (Optional)..." 
+                           placeholder="Search NFL Player / Pick 3 (Optional)..." 
                            oninput="calculateFantasyTrade()"
                            aria-label="Team B Asset Input 3">
 
@@ -184,7 +174,6 @@
         <section class="section-card" aria-labelledby="grade-analysis-heading">
             <h2 id="grade-analysis-heading">Flock-Style Expert Trade Analysis</h2>
             
-            <!-- Grade Badge and Verdict Header -->
             <div class="grade-container">
                 <div id="grade-badge" class="grade-badge badge-neutral" aria-live="polite">EVEN</div>
                 <div id="grade-verdict" class="grade-verdict" aria-live="polite">
@@ -192,12 +181,10 @@
                 </div>
             </div>
             
-            <!-- Value Bar Ratio -->
             <div class="progress-bar-bg" style="margin-top: 20px;" aria-label="Trade Value Share Ratio">
                 <div id="grade-value-bar" class="progress-bar-fill" style="width: 50%; background-color: var(--primary);"></div>
             </div>
 
-            <!-- Granular Breakdown Box -->
             <div id="grade-breakdown-box" class="feedback-box" aria-live="polite">
                 <p>📊 <strong>Flock Trade Metrics Analyzed:</strong> Rest-Of-Season (ROS) Value, Positional Scarcity Baseline, Stud Package Penalty, Format Multipliers.</p>
             </div>
@@ -205,13 +192,11 @@
 
     </main>
 
-    <!-- ==================================================
-         FOOTER SECTION
-    ================================================== -->
+    <!-- FOOTER -->
     <footer class="footer" role="contentinfo">
         <p>© 2026 Apex Sports Hub. All Rights Reserved. Built with HTML, CSS, and JavaScript.</p>
         <p style="font-size: 13px; color: var(--text-muted); margin-top: 6px;">
-            Data-Driven Trade Grader calibrated with positional replacement baselines, format multipliers, and stud tax algorithms.
+            NFL Fantasy Trade Grader calibrated with live Sleeper API player rosters, positional replacement baselines, and stud tax algorithms.
         </p>
     </footer>
 
