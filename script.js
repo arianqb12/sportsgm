@@ -3,7 +3,7 @@
    ========================================================================== */
 
 /* --------------------------------------------------------------------------
-   1. MASTER PLAYER & LEGENDS DATABASE
+   1. MASTER PLAYER & LEGENDS DATABASE (INITIAL STARTER POOL)
    -------------------------------------------------------------------------- */
 let masterPlayerDatabase = {
     nba: [
@@ -54,8 +54,14 @@ let masterPlayerDatabase = {
     ]
 };
 
+/* Track loaded player names to prevent duplicates */
+const loadedPlayerNames = { nba: new Set(), nfl: new Set(), mlb: new Set() };
+Object.keys(masterPlayerDatabase).forEach(sport => {
+    masterPlayerDatabase[sport].forEach(p => loadedPlayerNames[sport].add(p.name.toLowerCase()));
+});
+
 /* --------------------------------------------------------------------------
-   2. LIVE ESPN ACTIVE TEAM ROSTER API FETCH ENGINE (NBA, NFL, MLB)
+   2. LIVE ESPN ACTIVE ROSTER API FETCH ENGINE (NBA, NFL, MLB)
    -------------------------------------------------------------------------- */
 async function loadESPNActiveRosters() {
     const leagues = [
@@ -66,7 +72,6 @@ async function loadESPNActiveRosters() {
 
     for (let league of leagues) {
         try {
-            console.log(`Fetching active ${league.key.toUpperCase()} team rosters from ESPN API...`);
             const res = await fetch(`https://site.api.espn.com/apis/site/v2/sports/${league.path}/teams?limit=100`);
             if (!res.ok) continue;
             const data = await res.json();
@@ -75,18 +80,33 @@ async function loadESPNActiveRosters() {
                 const teams = data.sports[0].leagues[0].teams;
                 let fetchedPlayers = [];
 
-                teams.forEach(tObj => {
-                    const team = tObj.team;
-                    if (team.athletes) {
-                        team.athletes.forEach(a => {
-                            fetchedPlayers.push({
-                                name: a.fullName,
-                                pos: a.position ? a.position.abbreviation : "FLEX",
-                                ovr: 80 + (Math.abs(a.fullName.length * 3) % 18),
-                                salary: 25 + (Math.abs(a.fullName.length * 5) % 90),
-                                val: 65 + (Math.abs(a.fullName.length * 4) % 30),
-                                rank: `${a.position ? a.position.abbreviation : 'POS'}${Math.floor(Math.random() * 30) + 1}`,
-                                fppg: (12 + (Math.abs(a.fullName.length) % 15)).toFixed(1)
+                // Fetch full rosters in parallel across team endpoints
+                const rosterPromises = teams.map(tObj => 
+                    fetch(`https://site.api.espn.com/apis/site/v2/sports/${league.path}/teams/${tObj.team.id}/roster`)
+                        .then(r => r.ok ? r.json() : null)
+                        .catch(() => null)
+                );
+
+                const rosterResults = await Promise.all(rosterPromises);
+
+                rosterResults.forEach(rosterData => {
+                    if (rosterData && rosterData.athletes) {
+                        rosterData.athletes.forEach(group => {
+                            const items = group.items || (group.fullName ? [group] : []);
+                            items.forEach(a => {
+                                if (a.fullName && !loadedPlayerNames[league.key].has(a.fullName.toLowerCase())) {
+                                    loadedPlayerNames[league.key].add(a.fullName.toLowerCase());
+                                    const posAbbr = a.position ? a.position.abbreviation : "FLEX";
+                                    fetchedPlayers.push({
+                                        name: a.fullName,
+                                        pos: posAbbr,
+                                        ovr: 78 + (Math.abs(a.fullName.length * 3) % 19),
+                                        salary: 20 + (Math.abs(a.fullName.length * 5) % 85),
+                                        val: 60 + (Math.abs(a.fullName.length * 4) % 35),
+                                        rank: `${posAbbr}${Math.floor(Math.random() * 40) + 1}`,
+                                        fppg: (10 + (Math.abs(a.fullName.length) % 16)).toFixed(1)
+                                    });
+                                }
                             });
                         });
                     }
@@ -94,7 +114,8 @@ async function loadESPNActiveRosters() {
 
                 if (fetchedPlayers.length > 0) {
                     masterPlayerDatabase[league.key] = masterPlayerDatabase[league.key].concat(fetchedPlayers);
-                    console.log(`Added ${fetchedPlayers.length} active ${league.key.toUpperCase()} players to database!`);
+                    console.log(`Loaded ${fetchedPlayers.length} active ${league.key.toUpperCase()} roster players from ESPN API.`);
+                    populateGlobalDatalist(league.key);
                 }
             }
         } catch (err) {
@@ -104,11 +125,10 @@ async function loadESPNActiveRosters() {
 }
 
 /* --------------------------------------------------------------------------
-   3. SLEEPER FANTASY API INTEGRATION (NFL)
+   3. SLEEPER FANTASY API INTEGRATION (NFL ACTIVE ROSTERS & PLAYERS)
    -------------------------------------------------------------------------- */
 async function loadSleeperNFLPlayers() {
     try {
-        console.log("Fetching Sleeper NFL Fantasy Player Database...");
         const response = await fetch("https://api.sleeper.app/v1/players/nfl");
         if (!response.ok) throw new Error("Failed to fetch Sleeper players");
         const playersData = await response.json();
@@ -116,31 +136,36 @@ async function loadSleeperNFLPlayers() {
         let sleeperList = [];
         for (let id in playersData) {
             const p = playersData[id];
-            if (p.full_name && p.position && (p.status === "Active" || p.search_rank < 1200)) {
-                const searchRank = p.search_rank || 9999;
-                let estimatedVal = Math.max(10, Math.round(100 - (searchRank / 15)));
-                let ovr = Math.max(65, Math.round(99 - (searchRank / 30)));
-                let salary = Math.max(15, Math.round(140 - (searchRank / 10)));
-                let fppg = Math.max(2.0, (estimatedVal / 5).toFixed(1));
+            if (p.full_name && p.position && (p.status === "Active" || (p.search_rank && p.search_rank < 2500))) {
+                const nameKey = p.full_name.toLowerCase();
+                if (!loadedPlayerNames.nfl.has(nameKey)) {
+                    loadedPlayerNames.nfl.add(nameKey);
+                    const searchRank = p.search_rank || 9999;
+                    let estimatedVal = Math.max(15, Math.round(100 - (searchRank / 25)));
+                    let ovr = Math.max(68, Math.round(99 - (searchRank / 40)));
+                    let salary = Math.max(15, Math.round(140 - (searchRank / 15)));
+                    let fppg = Math.max(2.0, (estimatedVal / 5).toFixed(1));
 
-                sleeperList.push({
-                    name: p.full_name,
-                    pos: p.position,
-                    ovr: ovr,
-                    salary: salary,
-                    val: estimatedVal,
-                    rank: `${p.position}${Math.max(1, Math.round(searchRank / 20))}`,
-                    fppg: parseFloat(fppg)
-                });
+                    sleeperList.push({
+                        name: p.full_name,
+                        pos: p.position,
+                        ovr: ovr,
+                        salary: salary,
+                        val: estimatedVal,
+                        rank: `${p.position}${Math.max(1, Math.round(searchRank / 25))}`,
+                        fppg: parseFloat(fppg)
+                    });
+                }
             }
         }
 
         if (sleeperList.length > 0) {
             masterPlayerDatabase.nfl = masterPlayerDatabase.nfl.concat(sleeperList);
-            console.log(`Loaded Sleeper API NFL player database!`);
+            console.log(`Loaded ${sleeperList.length} active NFL players from Sleeper API.`);
+            populateGlobalDatalist('nfl');
         }
     } catch (err) {
-        console.warn("Sleeper API offline:", err);
+        console.warn("Sleeper API offline or unavailable:", err);
     }
 }
 
@@ -163,20 +188,35 @@ function updateActiveTab(containerEl, targetBtn, sportKey) {
 /* --------------------------------------------------------------------------
    5. GLOBAL AUTOCOMPLETE DATALIST POPULATOR
    -------------------------------------------------------------------------- */
-function populateGlobalDatalist(sport = 'nfl') {
+function populateGlobalDatalist(sport = 'nfl', filterQuery = '') {
     const list = document.getElementById('all-players-list');
     if (!list) return;
 
-    const pool = masterPlayerDatabase[sport] || [];
-    const topPool = pool.slice(0, 2000); // Efficient rendering cap for fast UI
+    let pool = masterPlayerDatabase[sport] || [];
 
-    list.innerHTML = topPool.map(p => 
-        `<option value="${p.name}">${p.pos} | ${p.rank || 'Rank --'} | Val: ${p.val} pts | ${p.fppg || 0} FPPG</option>`
+    if (filterQuery && filterQuery.trim().length > 0) {
+        const query = filterQuery.trim().toLowerCase();
+        pool = pool.filter(p => p.name.toLowerCase().includes(query));
+    }
+
+    // Limit visible options to top 1,500 matches for high-speed rendering
+    const displayPool = pool.slice(0, 1500);
+
+    list.innerHTML = displayPool.map(p => 
+        `<option value="${p.name}">${p.pos} | ${p.ovr} OVR | ${p.rank || 'Rank --'} | Val: ${p.val} pts</option>`
     ).join('');
 }
 
+/* Add input listener for dynamic typing search filtering */
+document.addEventListener('input', (e) => {
+    if (e.target && e.target.getAttribute('list') === 'all-players-list') {
+        const activeSport = (document.getElementById('grade-badge')) ? 'nfl' : currentGMSport;
+        populateGlobalDatalist(activeSport, e.target.value);
+    }
+});
+
 /* --------------------------------------------------------------------------
-   6. DYNAMIC ANY-PLAYER STAT & RANK ENGINE FOR UNLISTED / CUSTOM PLAYERS
+   6. DYNAMIC ANY-PLAYER STAT ENGINE FOR UNLISTED / LEGEND PLAYERS
    -------------------------------------------------------------------------- */
 function getOrGeneratePlayer(name, sport = 'nfl') {
     if (!name || name.trim() === "") return null;
@@ -193,8 +233,8 @@ function getOrGeneratePlayer(name, sport = 'nfl') {
         hash = searchName.charCodeAt(i) + ((hash << 5) - hash);
     }
     
-    const generatedVal = 60 + (Math.abs(hash) % 31);
-    const generatedOvr = 75 + (Math.abs(hash) % 20);
+    const generatedVal = 60 + (Math.abs(hash) % 35);
+    const generatedOvr = 78 + (Math.abs(hash) % 21); // 78 to 98 OVR
     const generatedSalary = 30 + (Math.abs(hash) % 70);
     const generatedFPPG = (generatedVal / 5.2).toFixed(1);
 
@@ -435,7 +475,7 @@ function renderFallbackScores(sportKey, container) {
 }
 
 /* --------------------------------------------------------------------------
-   9. 82-0.com STYLE GM FRANCHISE ENGINE (NBA, NFL, MLB)
+   9. UNDEFEATED GM FRANCHISE ENGINE (NBA, NFL, MLB - NO SALARY CAP)
    -------------------------------------------------------------------------- */
 let currentGMSport = 'nba';
 let userGMRoster = [];
@@ -509,12 +549,6 @@ function addSearchedPlayerToRoster() {
     const name = input.value.trim();
     const match = getOrGeneratePlayer(name, currentGMSport);
 
-    let currentSalary = userGMRoster.reduce((sum, p) => sum + p.salary, 0);
-    if (currentSalary + match.salary > 500) {
-        alert(`⚠️ Cannot draft ${match.name}! Payroll exceeds the $500M salary cap limit.`);
-        return;
-    }
-
     if (userGMRoster.length >= 5) userGMRoster.shift();
     userGMRoster.push(match);
     input.value = '';
@@ -525,7 +559,6 @@ function updateGMRosterUI() {
     const grid = document.getElementById('gm-roster-grid');
     if (!grid) return;
     grid.innerHTML = '';
-    let totalSalary = 0;
 
     const required = positionRequirements[currentGMSport];
 
@@ -533,12 +566,11 @@ function updateGMRosterUI() {
         const player = userGMRoster[idx] || userGMRoster.find(p => p.requiredPos === reqPos);
 
         if (player) {
-            totalSalary += player.salary;
             grid.innerHTML += `
                 <article class="gm-slot-card">
                     <strong>${player.pos || reqPos}</strong>
                     <div style="font-weight: 800; margin: 4px 0;">${player.name}</div>
-                    <small>${player.ovr} OVR | $${player.salary}M</small>
+                    <small style="color:var(--primary); font-weight:700;">${player.ovr} OVR Rating</small>
                     <button class="btn-secondary" style="width: 100%; margin-top: 8px; font-size: 11px; padding: 4px;" onclick="draftSinglePosition('${reqPos}')">🎲 Roll ${reqPos}</button>
                 </article>
             `;
@@ -552,48 +584,6 @@ function updateGMRosterUI() {
             `;
         }
     });
-
-    const remaining = 500 - totalSalary;
-    const capEl = document.getElementById('cap-remaining');
-    if (capEl) {
-        capEl.textContent = `$${remaining}M`;
-        capEl.className = remaining < 0 ? "text-danger" : "text-success";
-    }
-
-    const fill = document.getElementById('cap-progress-fill');
-    if (fill) fill.style.width = `${Math.min(Math.max((totalSalary / 500) * 100, 0), 100)}%`;
-
-    populateGMTradeSelect();
-}
-
-function populateGMTradeSelect() {
-    const select = document.getElementById('user-trade-select');
-    if (!select) return;
-    select.innerHTML = userGMRoster.map((p, i) => `<option value="${i}">${p.name} ($${p.salary}M)</option>`).join('');
-}
-
-function evaluateGMTrade() {
-    const select = document.getElementById('user-trade-select');
-    const targetInput = document.getElementById('target-trade-input');
-    const feedback = document.getElementById('trade-feedback');
-
-    if (!select || !targetInput || userGMRoster.length === 0 || !targetInput.value.trim()) {
-        if (feedback) feedback.innerHTML = "⚠️ Draft players and enter a target acquisition to evaluate trade.";
-        return;
-    }
-
-    const userIdx = select.value;
-    const userP = userGMRoster[userIdx];
-    const targetName = targetInput.value.trim();
-    const targetP = getOrGeneratePlayer(targetName, currentGMSport);
-
-    userGMRoster[userIdx] = targetP;
-    targetInput.value = '';
-    updateGMRosterUI();
-
-    if (feedback) {
-        feedback.innerHTML = `✅ <strong>TRADE APPROVED!</strong> Traded ${userP.name} ($${userP.salary}M) for ${targetP.name} ($${targetP.salary}M). Roster updated!`;
-    }
 }
 
 function simulateGMGames(numGames) {
@@ -608,19 +598,14 @@ function simulateGMGames(numGames) {
         return;
     }
 
-    let totalSalary = userGMRoster.reduce((sum, p) => sum + p.salary, 0);
-    if (totalSalary > 500) {
-        alert("⚠️ Your roster exceeds the $500M salary cap! Lower payroll before simulating.");
-        return;
-    }
-
     if (progressBox) progressBox.style.display = 'block';
     ticker.style.display = 'block';
     standings.style.display = 'none';
 
     let totalOvr = userGMRoster.reduce((sum, p) => sum + p.ovr, 0);
     let avgOvr = totalOvr / userGMRoster.length;
-    let winChance = (avgOvr - 72) / 28;
+    
+    let winChance = Math.min(Math.max((avgOvr - 68) / 30, 0.35), 0.98);
 
     let game = 0;
     let wins = 0;
@@ -659,22 +644,22 @@ function showFinalSeasonResult(wins, losses, totalGames, avgOvr) {
         standings.className = 'feedback-box';
         standings.style.borderColor = 'var(--accent)';
         standings.innerHTML = `
-            <h3 style="color:var(--accent); font-size:1.4rem;">🏆 ${totalGames}-0 PERFECT UNDEFEATED DYNASTY!</h3>
-            <p><strong>GOAT SQUAD!</strong> Average Team Rating: ${avgOvr.toFixed(1)} OVR. You created an untouchable championship team under the $500M cap!</p>
+            <h3 style="color:var(--accent); font-size:1.4rem;">🏆 ${totalGames}-0 PERFECT UNDEFEATED SEASON!</h3>
+            <p><strong>PERFECT DYNASTY!</strong> Average Team Rating: ${avgOvr.toFixed(1)} OVR. You assembled an untouchable championship lineup!</p>
             <div style="font-size:1.8rem; font-weight:900; color:var(--primary); margin-top:8px;">${wins} - ${losses} (100% Win PCT)</div>
         `;
     } else if (wins >= totalGames * 0.8) {
         standings.className = 'feedback-box';
         standings.innerHTML = `
             <h3 style="color:var(--success);">🔥 Championship Contender!</h3>
-            <p>Average Team Rating: ${avgOvr.toFixed(1)} OVR. Outstanding season! Re-roll or trade assets to chase the 100% perfect record!</p>
+            <p>Average Team Rating: ${avgOvr.toFixed(1)} OVR. Outstanding season! Re-roll or search higher OVR players to chase the 100% perfect record!</p>
             <div style="font-size:1.8rem; font-weight:900; color:var(--success); margin-top:8px;">${wins} - ${losses} (${winPct}% Win PCT)</div>
         `;
     } else {
         standings.className = 'feedback-box';
         standings.innerHTML = `
             <h3>🏀 Playoff Competitor</h3>
-            <p>Average Team Rating: ${avgOvr.toFixed(1)} OVR. Solid season performance. Adjust your lineup to increase your win probability!</p>
+            <p>Average Team Rating: ${avgOvr.toFixed(1)} OVR. Solid season performance. Draft higher OVR superstars to increase your win probability!</p>
             <div style="font-size:1.8rem; font-weight:900; color:var(--text-main); margin-top:8px;">${wins} - ${losses} (${winPct}% Win PCT)</div>
         `;
     }
@@ -683,7 +668,6 @@ function showFinalSeasonResult(wins, losses, totalGames, avgOvr) {
 /* --------------------------------------------------------------------------
    10. FLOCK FANTASY AI TRADE GRADER ENGINE (NFL ONLY)
    -------------------------------------------------------------------------- */
-let currentFantasySport = 'nfl';
 let formatSettings = { dynasty: true, ppr: true };
 
 function toggleFormatSetting(setting) {
@@ -803,7 +787,7 @@ function calculateFantasyTrade() {
             <li><strong>Team A Asset Ranks & Stats:</strong> ${teamAStats || 'None'}</li>
             <li><strong>Team B Asset Ranks & Stats:</strong> ${teamBStats || 'None'}</li>
             <li><strong>Net Adjusted Differential:</strong> ${Math.abs(Math.round(diff))} pts</li>
-            <li><strong>Stud Tax Applied:</strong> ${(maxValA > maxValB && teamBPlayers.length > 1) ? "Team B Depth Package Penalty (-12%)" : (maxValB > maxA && teamAPlayers.length > 1) ? "Team A Depth Package Penalty (-12%)" : "None"}</li>
+            <li><strong>Stud Tax Applied:</strong> ${(maxValA > maxValB && teamBPlayers.length > 1) ? "Team B Depth Package Penalty (-12%)" : (maxValB > maxValA && teamAPlayers.length > 1) ? "Team A Depth Package Penalty (-12%)" : "None"}</li>
         </ul>
     `;
 }
@@ -812,13 +796,14 @@ function calculateFantasyTrade() {
    11. SAFE DOM LOAD INITIALIZER
    -------------------------------------------------------------------------- */
 document.addEventListener('DOMContentLoaded', async () => {
-    // 1. Fetch active team rosters across ESPN (NBA, NFL, MLB)
+    // Populate datalists immediately with starter database
+    populateGlobalDatalist(document.getElementById('grade-badge') ? 'nfl' : 'nba');
+
+    // Fetch full active rosters asynchronously across APIs
     await loadESPNActiveRosters();
-    
-    // 2. Fetch Sleeper API (~10,000 NFL fantasy players)
     await loadSleeperNFLPlayers();
 
-    // 3. Initialize page components
+    // Refresh active page elements after API rosters complete
     if (document.getElementById('espn-news-grid')) {
         loadESPNNews('nba');
     }
@@ -826,7 +811,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         fetchLiveESPNScores('nba');
     }
     if (document.getElementById('gm-roster-grid')) {
-        populateGlobalDatalist('nba');
+        populateGlobalDatalist(currentGMSport);
         updateGMRosterUI();
     }
     if (document.getElementById('grade-badge')) {
