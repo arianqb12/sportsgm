@@ -4,27 +4,52 @@
     <!-- Document Metadata & Encoding -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Apex Sports Hub - Data-Driven NFL Fantasy Trade Grader modeled after Flock Fantasy and KeepTradeCut. Analyze multi-player trades, rest-of-season projections, and stud premium package penalties for NFL fantasy football.">
-    <meta name="keywords" content="fantasy trade grader, trade calculator, Flock Fantasy, KeepTradeCut, fantasy football, dynasty trade calculator, ROS value, stud tax, NFL">
-    <meta name="author" content="Apex Sports Development Team">
-    
-    <!-- Open Graph Metadata for Social Media Sharing -->
-    <meta property="og:title" content="Apex Sports Hub | Data-Driven NFL Fantasy Trade Grader">
-    <meta property="og:description" content="Evaluate NFL fantasy trade packages instantly! Modeled after professional trade engines with positional scarcity and stud tax penalties.">
-    <meta property="og:image" content="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1200&q=80">
-    <meta property="og:type" content="website">
-
-    <!-- Page Title -->
+    <meta name="description" content="Apex Sports Hub - Data-Driven NFL Fantasy Trade Grader modeled after Flock Fantasy and KeepTradeCut.">
     <title>Apex Sports Hub | Data-Driven NFL Fantasy Trade Grader</title>
-
-    <!-- External Style Sheet Link -->
     <link rel="stylesheet" href="styles.css">
+    <style>
+        /* High-contrast input and player preview badge styles */
+        .form-input {
+            color: #ffffff !important;
+            background-color: #1e293b !important;
+            border: 1px solid #334155;
+            padding: 10px 14px;
+            border-radius: 6px;
+            font-size: 14px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .form-input::placeholder {
+            color: #94a3b8;
+        }
+        .asset-input-group {
+            margin-bottom: 12px;
+        }
+        .player-card-preview {
+            background: rgba(59, 130, 246, 0.15);
+            border: 1px solid #3b82f6;
+            border-radius: 6px;
+            padding: 8px 12px;
+            margin-top: 6px;
+            font-size: 13px;
+            color: #f8fafc;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .preview-name {
+            font-weight: 700;
+            color: #60a5fa;
+        }
+        .preview-details {
+            font-size: 12px;
+            color: #cbd5e1;
+        }
+    </style>
 </head>
 <body>
 
-    <!-- ==================================================
-         GLOBAL NAVIGATION BAR
-    ================================================== -->
+    <!-- GLOBAL NAVIGATION BAR -->
     <header class="navbar" aria-label="Global Navigation Header">
         <div class="nav-container">
             <div class="brand-logo" aria-label="Apex Sports Hub Brand Logo">
@@ -39,27 +64,22 @@
         </div>
     </header>
 
-    <!-- ==================================================
-         LIVE TICKER MARQUEE
-    ================================================== -->
+    <!-- LIVE TICKER MARQUEE -->
     <div class="ticker-bar" aria-label="Fantasy Trade Grader Ticker">
         <div class="ticker-content" id="live-ticker-text">
-            📊 <strong>FLOCK-STYLE NFL TRADE ENGINE READY:</strong> Search any active NFL player or draft pick, adjust Dynasty/Redraft settings, and analyze package density values!
+            📊 <strong>FLOCK-STYLE NFL TRADE ENGINE READY:</strong> Search any active NFL player or draft pick on both sides to evaluate package density values!
         </div>
     </div>
 
-    <!-- ==================================================
-         MAIN PAGE CONTAINER
-    ================================================== -->
+    <!-- MAIN PAGE CONTAINER -->
     <main class="page-container">
 
         <!-- HERO SECTION -->
         <section class="hero-card" aria-labelledby="hero-title">
             <h1 id="hero-title">📊 Data-Driven NFL Fantasy Trade Grader</h1>
             <p>
-                Evaluate complex multi-player NFL fantasy trade packages like the industry pros! Modeled after 
-                <strong>Flock Fantasy</strong> and <strong>KeepTradeCut</strong> trade engines. Search any active NFL player, rookie, 
-                or draft pick below to analyze Rest-Of-Season (ROS) projections, positional scarcity, and automatic stud-premium package density penalties.
+                Evaluate multi-player NFL fantasy trade packages. Modeled after 
+                <strong>Flock Fantasy</strong> and <strong>KeepTradeCut</strong> trade engines with positional scarcity, Rest-Of-Season (ROS) projections, and automatic stud package penalties.
             </p>
             <img class="hero-image" 
                  src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1200&q=80" 
@@ -70,14 +90,13 @@
         <!-- FORMAT SETTINGS CONTROLS -->
         <section class="section-card" aria-labelledby="format-heading">
             <h2 id="format-heading">NFL League Format & Scoring Settings</h2>
-            <p>Customize your fantasy league format settings to dynamically calibrate player market values:</p>
+            <p>Customize your fantasy league format settings to calibrate player market values:</p>
 
             <div class="settings-control-bar">
                 <div class="sport-tabs">
                     <button class="tab-btn active" role="tab" aria-selected="true">🏈 NFL Fantasy Football</button>
                 </div>
 
-                <!-- Format Toggles -->
                 <div class="format-toggles" aria-label="League Format Toggles">
                     <button id="toggle-league-type" class="toggle-pill" onclick="toggleFormatSetting('dynasty')" aria-label="Toggle Dynasty or Redraft Format">Format: <span>Dynasty</span></button>
                     <button id="toggle-scoring-type" class="toggle-pill" onclick="toggleFormatSetting('scoring')" aria-label="Toggle Scoring Format">Scoring: <span>Full PPR</span></button>
@@ -91,7 +110,7 @@
         <!-- SIDE-BY-SIDE MULTI-ASSET TRADE EVALUATOR -->
         <section class="section-card" aria-labelledby="evaluator-heading">
             <h2 id="evaluator-heading">Multi-Asset Player Trade Evaluator</h2>
-            <p>Search and add up to 3 players or draft picks per side to compare total package values:</p>
+            <p>Type any player or pick name on either side to view asset cards and live value calculations:</p>
 
             <div class="trade-evaluator-grid">
                 
@@ -99,29 +118,41 @@
                 <div class="eval-column" aria-label="Team A Asset Inputs">
                     <h3 class="team-title text-primary">Team A Receives / Team B Gives</h3>
                     
-                    <input type="text" 
-                           id="fantasy-input-A1" 
-                           class="form-input" 
-                           list="all-players-list" 
-                           placeholder="Search NFL Player / Pick 1 (e.g. Justin Jefferson)..." 
-                           oninput="calculateFantasyTrade()"
-                           aria-label="Team A Asset Input 1">
+                    <div class="asset-input-group">
+                        <input type="text" 
+                               id="fantasy-input-A1" 
+                               class="form-input" 
+                               list="all-players-list" 
+                               placeholder="Search Team A Asset 1 (e.g. Justin Jefferson)..." 
+                               oninput="calculateFantasyTrade()"
+                               onchange="calculateFantasyTrade()"
+                               aria-label="Team A Asset Input 1">
+                        <div id="preview-A1"></div>
+                    </div>
                            
-                    <input type="text" 
-                           id="fantasy-input-A2" 
-                           class="form-input" 
-                           list="all-players-list" 
-                           placeholder="Search NFL Player / Pick 2 (Optional)..." 
-                           oninput="calculateFantasyTrade()"
-                           aria-label="Team A Asset Input 2">
+                    <div class="asset-input-group">
+                        <input type="text" 
+                               id="fantasy-input-A2" 
+                               class="form-input" 
+                               list="all-players-list" 
+                               placeholder="Search Team A Asset 2 (Optional)..." 
+                               oninput="calculateFantasyTrade()"
+                               onchange="calculateFantasyTrade()"
+                               aria-label="Team A Asset Input 2">
+                        <div id="preview-A2"></div>
+                    </div>
                            
-                    <input type="text" 
-                           id="fantasy-input-A3" 
-                           class="form-input" 
-                           list="all-players-list" 
-                           placeholder="Search NFL Player / Pick 3 (Optional)..." 
-                           oninput="calculateFantasyTrade()"
-                           aria-label="Team A Asset Input 3">
+                    <div class="asset-input-group">
+                        <input type="text" 
+                               id="fantasy-input-A3" 
+                               class="form-input" 
+                               list="all-players-list" 
+                               placeholder="Search Team A Asset 3 (Optional)..." 
+                               oninput="calculateFantasyTrade()"
+                               onchange="calculateFantasyTrade()"
+                               aria-label="Team A Asset Input 3">
+                        <div id="preview-A3"></div>
+                    </div>
 
                     <div class="value-summary">
                         Total Value Density: <strong id="val-teamA" class="text-primary">0 pts</strong>
@@ -135,29 +166,41 @@
                 <div class="eval-column" aria-label="Team B Asset Inputs">
                     <h3 class="team-title text-accent">Team B Receives / Team A Gives</h3>
                     
-                    <input type="text" 
-                           id="fantasy-input-B1" 
-                           class="form-input" 
-                           list="all-players-list" 
-                           placeholder="Search NFL Player / Pick 1 (e.g. Christian McCaffrey)..." 
-                           oninput="calculateFantasyTrade()"
-                           aria-label="Team B Asset Input 1">
+                    <div class="asset-input-group">
+                        <input type="text" 
+                               id="fantasy-input-B1" 
+                               class="form-input" 
+                               list="all-players-list" 
+                               placeholder="Search Team B Asset 1 (e.g. Christian McCaffrey)..." 
+                               oninput="calculateFantasyTrade()"
+                               onchange="calculateFantasyTrade()"
+                               aria-label="Team B Asset Input 1">
+                        <div id="preview-B1"></div>
+                    </div>
                            
-                    <input type="text" 
-                           id="fantasy-input-B2" 
-                           class="form-input" 
-                           list="all-players-list" 
-                           placeholder="Search NFL Player / Pick 2 (Optional)..." 
-                           oninput="calculateFantasyTrade()"
-                           aria-label="Team B Asset Input 2">
+                    <div class="asset-input-group">
+                        <input type="text" 
+                               id="fantasy-input-B2" 
+                               class="form-input" 
+                               list="all-players-list" 
+                               placeholder="Search Team B Asset 2 (Optional)..." 
+                               oninput="calculateFantasyTrade()"
+                               onchange="calculateFantasyTrade()"
+                               aria-label="Team B Asset Input 2">
+                        <div id="preview-B2"></div>
+                    </div>
                            
-                    <input type="text" 
-                           id="fantasy-input-B3" 
-                           class="form-input" 
-                           list="all-players-list" 
-                           placeholder="Search NFL Player / Pick 3 (Optional)..." 
-                           oninput="calculateFantasyTrade()"
-                           aria-label="Team B Asset Input 3">
+                    <div class="asset-input-group">
+                        <input type="text" 
+                               id="fantasy-input-B3" 
+                               class="form-input" 
+                               list="all-players-list" 
+                               placeholder="Search Team B Asset 3 (Optional)..." 
+                               oninput="calculateFantasyTrade()"
+                               onchange="calculateFantasyTrade()"
+                               aria-label="Team B Asset Input 3">
+                        <div id="preview-B3"></div>
+                    </div>
 
                     <div class="value-summary">
                         Total Value Density: <strong id="val-teamB" class="text-accent">0 pts</strong>
