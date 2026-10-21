@@ -17,6 +17,14 @@ const positionRequirements = {
 
 const seasonLengths = { nba: 82, nfl: 17, mlb: 162 };
 
+function normalizePlayerName(value = '') {
+    return String(value || '')
+        .toLowerCase()
+        .replace(/[^a-z0-9\s]/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+}
+
 let masterPlayerDatabase = {
     nba: [
         { name: "Steph Curry", pos: "PG", ovr: 96, val: 95, rank: "PG1", fppg: 48.5 },
@@ -78,45 +86,68 @@ let masterPlayerDatabase = {
 
 const loadedPlayerNames = { nba: new Set(), nfl: new Set(), mlb: new Set() };
 Object.keys(masterPlayerDatabase).forEach(sport => {
-    masterPlayerDatabase[sport].forEach(p => loadedPlayerNames[sport].add(p.name.toLowerCase()));
+    masterPlayerDatabase[sport].forEach(p => loadedPlayerNames[sport].add(normalizePlayerName(p.name)));
 });
 
 /* --------------------------------------------------------------------------
    2. BULK SINGLE-ENDPOINT API FETCHERS
    -------------------------------------------------------------------------- */
+function buildSleeperPlayerRecord(player) {
+    const fullName = (player.full_name || [player.first_name, player.last_name].filter(Boolean).join(' ') || '').trim();
+    if (!fullName) return null;
+
+    const normalizedPosition = (player.position || '').toUpperCase();
+    const teamCode = player.team || player.team_abbr || 'FA';
+    const activeStatus = player.status || player.injury_status || 'ACTIVE';
+    const searchRank = Number(player.search_rank) || 9999;
+    const val = Math.max(15, Math.min(99, Math.round(100 - (searchRank / 18))));
+    const ovr = Math.max(68, Math.min(99, Math.round(99 - (searchRank / 28))));
+    const fantasyValue = Number(player.fantasy_points) || Number((val / 4.2).toFixed(1));
+
+    return {
+        name: fullName,
+        pos: normalizedPosition || 'FLEX',
+        team: teamCode,
+        status: activeStatus,
+        ovr,
+        val,
+        rank: `${normalizedPosition || 'FLEX'}${Math.max(1, Math.round(searchRank / 25))}`,
+        fppg: fantasyValue
+    };
+}
+
 async function loadSleeperNFLBulk() {
     try {
-        const response = await fetch("https://api.sleeper.app/v1/players/nfl");
-        if (!response.ok) return;
-        const playersData = await response.json();
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 10000);
+        const response = await fetch('https://api.sleeper.app/v1/players/nfl', { signal: controller.signal, mode: 'cors' });
+        clearTimeout(timeoutId);
 
-        let bulkCount = 0;
-        for (let id in playersData) {
-            const p = playersData[id];
-            if (p.full_name && p.position) {
-                const nameKey = p.full_name.toLowerCase();
-                if (!loadedPlayerNames.nfl.has(nameKey)) {
-                    loadedPlayerNames.nfl.add(nameKey);
-                    const searchRank = p.search_rank || 9999;
-                    let val = Math.max(15, Math.round(100 - (searchRank / 30)));
-                    let ovr = Math.max(68, Math.round(99 - (searchRank / 45)));
-
-                    masterPlayerDatabase.nfl.push({
-                        name: p.full_name,
-                        pos: p.position,
-                        ovr: ovr,
-                        val: val,
-                        rank: `${p.position}${Math.max(1, Math.round(searchRank / 25))}`,
-                        fppg: parseFloat((val / 5).toFixed(1))
-                    });
-                    bulkCount++;
-                }
-            }
+        if (!response.ok) {
+            console.warn('Sleeper NFL bulk API returned non-OK status:', response.status);
+            return;
         }
+
+        const playersData = await response.json();
+        let bulkCount = 0;
+        const nflPool = masterPlayerDatabase.nfl || [];
+
+        Object.values(playersData || {}).forEach(player => {
+            const record = buildSleeperPlayerRecord(player);
+            if (!record) return;
+
+            const key = normalizePlayerName(record.name);
+            if (loadedPlayerNames.nfl.has(key)) return;
+
+            loadedPlayerNames.nfl.add(key);
+            nflPool.push(record);
+            bulkCount++;
+        });
+
         console.log(`Loaded ${bulkCount} active NFL players from Sleeper bulk API.`);
         updateAutocompleteDropdown('nfl', '');
     } catch (err) {
-        console.warn("Sleeper bulk API unavailable:", err);
+        console.warn('Sleeper bulk API unavailable:', err);
     }
 }
 
@@ -138,8 +169,8 @@ async function loadESPNLeagueRosters() {
                     const team = tObj.team;
                     if (team.athletes) {
                         team.athletes.forEach(a => {
-                            if (a.fullName && !loadedPlayerNames[league.key].has(a.fullName.toLowerCase())) {
-                                loadedPlayerNames[league.key].add(a.fullName.toLowerCase());
+                            if (a.fullName && !loadedPlayerNames[league.key].has(normalizePlayerName(a.fullName))) {
+                                loadedPlayerNames[league.key].add(normalizePlayerName(a.fullName));
                                 const posAbbr = a.position ? a.position.abbreviation : "FLEX";
                                 masterPlayerDatabase[league.key].push({
                                     name: a.fullName,
@@ -170,14 +201,16 @@ function updateAutocompleteDropdown(sport = currentGMSport, query = '') {
     let pool = masterPlayerDatabase[sport] || masterPlayerDatabase.nfl;
 
     if (query && query.trim().length > 0) {
-        const q = query.trim().toLowerCase();
-        pool = pool.filter(p => p.name.toLowerCase().includes(q));
+        const q = normalizePlayerName(query);
+        pool = pool.filter(p => normalizePlayerName(p.name).includes(q));
     }
 
-    const matches = pool.slice(0, 30);
-    list.innerHTML = matches.map(p => 
-        `<option value="${p.name}">${p.pos} | ${p.ovr} OVR | ${p.rank || 'Rank --'} | Val: ${p.val} pts</option>`
-    ).join('');
+    const matches = pool.slice(0, 40);
+    list.innerHTML = matches.map(p => {
+        const statusText = p.status || 'ACTIVE';
+        const teamText = p.team || 'FA';
+        return `<option value="${p.name}">${p.pos} | ${teamText} | ${statusText} | ${p.ovr} OVR | ${p.rank || 'Rank --'} | Val: ${p.val} pts</option>`;
+    }).join('');
 }
 
 function setActiveTabFromSport(sportName) {
@@ -409,17 +442,24 @@ document.addEventListener('input', (e) => {
    4. DYNAMIC ANY-PLAYER STAT ENGINE
    -------------------------------------------------------------------------- */
 function getOrGeneratePlayer(name, sport = 'nfl') {
-    if (!name || name.trim() === "") return null;
+    if (!name || name.trim() === '') return null;
 
     const pool = masterPlayerDatabase[sport] || masterPlayerDatabase.nfl;
-    const searchName = name.trim().toLowerCase();
-    const match = pool.find(p => p.name.toLowerCase() === searchName);
+    const targetName = name.trim();
+    const normalizedTarget = normalizePlayerName(targetName);
 
-    if (match) return match;
+    const exactMatch = pool.find(p => normalizePlayerName(p.name) === normalizedTarget);
+    if (exactMatch) return exactMatch;
+
+    const fuzzyMatch = pool.find(p => {
+        const normalizedPlayer = normalizePlayerName(p.name);
+        return normalizedPlayer.includes(normalizedTarget) || normalizedTarget.includes(normalizedPlayer);
+    });
+    if (fuzzyMatch) return fuzzyMatch;
 
     let hash = 0;
-    for (let i = 0; i < searchName.length; i++) {
-        hash = searchName.charCodeAt(i) + ((hash << 5) - hash);
+    for (let i = 0; i < normalizedTarget.length; i++) {
+        hash = normalizedTarget.charCodeAt(i) + ((hash << 5) - hash);
     }
     
     const generatedVal = 60 + (Math.abs(hash) % 35);
@@ -432,7 +472,7 @@ function getOrGeneratePlayer(name, sport = 'nfl') {
     if (sport === 'mlb') defaultPos = ["OF", "IF", "SP", "C", "DH"][Math.abs(hash) % 5];
 
     return {
-        name: name.trim(),
+        name: targetName,
         pos: defaultPos,
         ovr: generatedOvr,
         val: generatedVal,
@@ -454,7 +494,7 @@ function updatePlayerPreview(elementId, player) {
     el.innerHTML = `
         <div class="player-card-preview">
             <span class="preview-name">👤 ${player.name}</span>
-            <span class="preview-details">${player.pos} | ${player.rank || 'Rank --'} | ${player.fppg || 0} FPPG | <strong>${player.val} pts</strong></span>
+            <span class="preview-details">${player.pos} | ${player.team || 'FA'} | ${player.status || 'ACTIVE'} | ${player.rank || 'Rank --'} | ${player.fppg || 0} FPPG | <strong>${player.val} pts</strong></span>
         </div>
     `;
 }
@@ -563,8 +603,8 @@ function calculateFantasyTrade() {
         if (verdict) verdict.textContent = "WIN FOR TEAM B. Team B receives higher rest-of-season value density.";
     }
 
-    const teamAStats = playersA.map(p => `${p.name} (${p.rank || 'Rank --'} | ${p.fppg || 0} FPPG)`).join(', ');
-    const teamBStats = playersB.map(p => `${p.name} (${p.rank || 'Rank --'} | ${p.fppg || 0} FPPG)`).join(', ');
+    const teamAStats = playersA.map(p => `${p.name} (${p.team || 'FA'} | ${p.pos} | ${p.rank || 'Rank --'} | ${p.fppg || 0} FPPG)`).join(', ');
+    const teamBStats = playersB.map(p => `${p.name} (${p.team || 'FA'} | ${p.pos} | ${p.rank || 'Rank --'} | ${p.fppg || 0} FPPG)`).join(', ');
 
     if (breakdown) {
         breakdown.innerHTML = `
@@ -573,7 +613,7 @@ function calculateFantasyTrade() {
                 <li><strong>Team A Asset Ranks & Stats:</strong> ${teamAStats || 'None'}</li>
                 <li><strong>Team B Asset Ranks & Stats:</strong> ${teamBStats || 'None'}</li>
                 <li><strong>Net Adjusted Differential:</strong> ${Math.abs(Math.round(diff))} pts</li>
-                <li><strong>Stud Tax Applied:</strong> ${(maxValA > maxValB && playersB.length > 1) ? "Team B Depth Package Penalty (-12%)" : (maxValB > maxValA && playersA.length > 1) ? "Team A Depth Package Penalty (-12%)" : "No stud tax penalty"}</li>
+                <li><strong>Stud Tax Applied:</strong> ${(maxValA > maxValB && playersB.length > 1) ? 'Team B Depth Package Penalty (-12%)' : (maxValB > maxValA && playersA.length > 1) ? 'Team A Depth Package Penalty (-12%)' : 'No stud tax penalty'}</li>
             </ul>
         `;
     }
