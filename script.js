@@ -389,13 +389,20 @@ async function fetchLiveESPNScores(sport = 'nba') {
 
 let searchDebounceTimer;
 document.addEventListener('input', (e) => {
-    if (e.target && e.target.getAttribute('list') === 'all-players-list') {
-        clearTimeout(searchDebounceTimer);
-        searchDebounceTimer = setTimeout(() => {
-            const activeSport = document.getElementById('grade-badge') ? 'nfl' : currentGMSport;
-            updateAutocompleteDropdown(activeSport, e.target.value);
-        }, 100);
-    }
+    const target = e.target;
+    if (!(target instanceof HTMLInputElement)) return;
+
+    const fantasyInputIds = [
+        'fantasy-input-A1', 'fantasy-input-A2', 'fantasy-input-A3',
+        'fantasy-input-B1', 'fantasy-input-B2', 'fantasy-input-B3'
+    ];
+
+    if (!fantasyInputIds.includes(target.id)) return;
+
+    clearTimeout(searchDebounceTimer);
+    searchDebounceTimer = setTimeout(() => {
+        updateAutocompleteDropdown('nfl', target.value);
+    }, 100);
 });
 
 /* --------------------------------------------------------------------------
@@ -566,7 +573,7 @@ function calculateFantasyTrade() {
                 <li><strong>Team A Asset Ranks & Stats:</strong> ${teamAStats || 'None'}</li>
                 <li><strong>Team B Asset Ranks & Stats:</strong> ${teamBStats || 'None'}</li>
                 <li><strong>Net Adjusted Differential:</strong> ${Math.abs(Math.round(diff))} pts</li>
-                <li><strong>Stud Tax Applied:</strong> ${(maxValA > maxValB && playersB.length > 1) ? "Team B Depth Package Penalty (-12%)" : (maxValB > maxValA && playersA.length > 1) ? "Team A Depth Package Penalty (-12%)" : "No stud tax applied"}</li>
+                <li><strong>Stud Tax Applied:</strong> ${(maxValA > maxValB && playersB.length > 1) ? "Team B Depth Package Penalty (-12%)" : (maxValB > maxValA && playersA.length > 1) ? "Team A Depth Package Penalty (-12%)" : "No stud tax penalty"}</li>
             </ul>
         `;
     }
