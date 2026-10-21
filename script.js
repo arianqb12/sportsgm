@@ -180,6 +180,213 @@ function updateAutocompleteDropdown(sport = currentGMSport, query = '') {
     ).join('');
 }
 
+function setActiveTabFromSport(sportName) {
+    const sportKey = String(sportName || '').toLowerCase();
+    document.querySelectorAll('.sport-tabs .tab-btn').forEach(button => {
+        const buttonText = (button.textContent || '').toLowerCase();
+        const isActive = buttonText.includes(sportKey);
+        button.classList.toggle('active', isActive);
+        button.setAttribute('aria-selected', String(isActive));
+    });
+}
+
+function buildFallbackNewsCards(sport) {
+    const labels = {
+        nba: { title: 'NBA', badgeClass: 'badge-nba', prefix: '🏀 NBA' },
+        nfl: { title: 'NFL', badgeClass: 'badge-nfl', prefix: '🏈 NFL' },
+        mlb: { title: 'MLB', badgeClass: 'badge-mlb', prefix: '⚾ MLB' }
+    };
+    const info = labels[sport] || labels.nba;
+
+    return [
+        {
+            title: 'Late-game injury updates and playoff race swings dominate the latest headlines',
+            desc: 'Watch for late adjustments as contenders continue to shuffle rotations and closing lineups.',
+            image: 'https://images.unsplash.com/photo-1546519638-68e109498ffc?auto=format&fit=crop&w=600&q=80',
+            link: 'https://www.espn.com/'
+        },
+        {
+            title: 'Front offices remain active across trade talks and roster moves',
+            desc: 'Teams are evaluating depth, value, and matchup leverage as the season ramps up.',
+            image: 'https://images.unsplash.com/photo-1566577739112-5180d4bf9390?auto=format&fit=crop&w=600&q=80',
+            link: 'https://www.espn.com/'
+        },
+        {
+            title: 'Key matchups and scheduling shifts continue to reshape the title picture',
+            desc: 'A rising trend of big performances and late surges is changing the playoff landscape.',
+            image: 'https://images.unsplash.com/photo-1508802298132-0545fe5e02c5?auto=format&fit=crop&w=600&q=80',
+            link: 'https://www.espn.com/'
+        }
+    ].map(story => `
+        <article class="news-card">
+            <img src="${story.image}" alt="${story.title}" loading="lazy">
+            <span class="badge ${info.badgeClass}">${info.prefix}</span>
+            <h3>${story.title}</h3>
+            <p>${story.desc}</p>
+            <a href="${story.link}" target="_blank" rel="noopener noreferrer" class="action-link">Read Full Story on ESPN ➔</a>
+        </article>
+    `).join('');
+}
+
+async function loadESPNNews(sport = 'nba') {
+    const grid = document.getElementById('espn-news-grid');
+    const heading = document.getElementById('news-section-title');
+    if (!grid || !heading) return;
+
+    setActiveTabFromSport(sport);
+
+    const sportConfig = {
+        nba: { label: 'NBA', path: 'basketball/nba' },
+        nfl: { label: 'NFL', path: 'football/nfl' },
+        mlb: { label: 'MLB', path: 'baseball/mlb' }
+    };
+    const config = sportConfig[sport] || sportConfig.nba;
+    heading.textContent = `${config.label} Breaking News Feed`;
+
+    try {
+        const response = await fetch(`https://site.api.espn.com/apis/site/v2/sports/${config.path}/news`);
+        if (!response.ok) throw new Error('News fetch failed');
+        const data = await response.json();
+        const stories = Array.isArray(data.articles) ? data.articles.slice(0, 6) : [];
+
+        if (!stories.length) throw new Error('No news articles available');
+
+        grid.innerHTML = stories.map(article => {
+            const image = article.images && article.images[0] ? article.images[0].url : 'https://images.unsplash.com/photo-1546519638-68e109498ffc?auto=format&fit=crop&w=600&q=80';
+            const headline = article.headline || 'Sports update';
+            const summary = article.description || article.story || 'More details available on ESPN.';
+            const link = (article.links && article.links.web && article.links.web.href) ? article.links.web.href : 'https://www.espn.com/';
+            const badgeClass = sport === 'nba' ? 'badge-nba' : sport === 'nfl' ? 'badge-nfl' : 'badge-mlb';
+            return `
+                <article class="news-card">
+                    <img src="${image}" alt="${headline}" loading="lazy">
+                    <span class="badge ${badgeClass}">🏆 ${config.label}</span>
+                    <h3>${headline}</h3>
+                    <p>${summary}</p>
+                    <a href="${link}" target="_blank" rel="noopener noreferrer" class="action-link">Read Full Story on ESPN ➔</a>
+                </article>
+            `;
+        }).join('');
+    } catch (error) {
+        console.warn('Falling back to static ESPN news content:', error);
+        grid.innerHTML = buildFallbackNewsCards(sport);
+    }
+}
+
+function buildFallbackGameCards(sport) {
+    const matchups = {
+        nba: [
+            ['Lakers', '108', 'Celtics', '105'],
+            ['Knicks', '103', 'Bucks', '99'],
+            ['Nuggets', '116', 'Warriors', '112']
+        ],
+        mlb: [
+            ['Yankees', '6', 'Dodgers', '4'],
+            ['Braves', '7', 'Mets', '5'],
+            ['Astros', '9', 'Phillies', '8']
+        ],
+        nfl: [
+            ['Chiefs', '-', 'Eagles', '-'],
+            ['Bills', '-', 'Rams', '-'],
+            ['49ers', '-', 'Cowboys', '-']
+        ]
+    };
+
+    const labels = {
+        nba: '🏀 NBA BASKETBALL',
+        mlb: '⚾ MLB BASEBALL',
+        nfl: '🏈 NFL FOOTBALL'
+    };
+
+    return matchups[sport].map(([teamA, scoreA, teamB, scoreB], idx) => `
+        <article class="game-card">
+            <div class="game-header">
+                <span class="badge ${sport === 'nba' ? 'badge-nba' : sport === 'nfl' ? 'badge-nfl' : 'badge-mlb'}">${labels[sport]}</span>
+                <span class="${idx % 2 === 0 ? 'status-live' : 'status-final'}">${idx % 2 === 0 ? '🔴 LIVE' : 'FINAL'}</span>
+            </div>
+            <div class="game-matchup">
+                <div class="team">${teamA} <strong>${scoreA}</strong></div>
+                <div class="vs">VS</div>
+                <div class="team">${teamB} <strong>${scoreB}</strong></div>
+            </div>
+            <div class="game-info">
+                <p>📍 ${sport === 'nba' ? 'Crypto.com Arena | Los Angeles, CA' : sport === 'mlb' ? 'Yankee Stadium | Bronx, NY' : 'Arrowhead Stadium | Kansas City, MO'}</p>
+                <p style="font-size: 13px; color: var(--accent); margin-top: 4px;">⚡ Entry pricing from $${25 + idx * 18}</p>
+            </div>
+            <div class="ticket-actions">
+                <a href="https://seatgeek.com/sports-tickets" target="_blank" rel="noopener noreferrer" class="ticket-btn btn-seatgeek">Find Deals on SeatGeek ➔</a>
+                <a href="https://www.stubhub.com" target="_blank" rel="noopener noreferrer" class="ticket-btn btn-stubhub">Compare on StubHub ➔</a>
+                <a href="https://www.ticketmaster.com" target="_blank" rel="noopener noreferrer" class="ticket-btn btn-ticketmaster">Buy on Ticketmaster ➔</a>
+            </div>
+        </article>
+    `).join('');
+}
+
+async function fetchLiveESPNScores(sport = 'nba') {
+    const container = document.getElementById('live-games-container');
+    const heading = document.getElementById('scoreboard-title');
+    if (!container || !heading) return;
+
+    setActiveTabFromSport(sport);
+
+    const sportConfig = {
+        nba: { label: 'NBA', path: 'basketball/nba' },
+        mlb: { label: 'MLB', path: 'baseball/mlb' },
+        nfl: { label: 'NFL', path: 'football/nfl' }
+    };
+    const config = sportConfig[sport] || sportConfig.nba;
+    heading.textContent = `${config.label} Live Matchup Scoreboard`;
+
+    try {
+        const response = await fetch(`https://site.api.espn.com/apis/site/v2/sports/${config.path}/scoreboard`);
+        if (!response.ok) throw new Error('Scoreboard fetch failed');
+        const data = await response.json();
+        const events = Array.isArray(data.events) ? data.events.slice(0, 6) : [];
+
+        if (!events.length) throw new Error('No score data available');
+
+        container.innerHTML = events.map(event => {
+            const competition = (event.competitions && event.competitions[0]) || {};
+            const competitors = Array.isArray(competition.competitors) ? competition.competitors : [];
+            const homeTeam = competitors.find(team => team.homeAway === 'home') || competitors[0] || {};
+            const awayTeam = competitors.find(team => team.homeAway === 'away') || competitors[1] || competitors[0] || {};
+            const homeName = (homeTeam.team && homeTeam.team.displayName) || 'Home Team';
+            const awayName = (awayTeam.team && awayTeam.team.displayName) || 'Away Team';
+            const homeScore = homeTeam.score ?? '-';
+            const awayScore = awayTeam.score ?? '-';
+            const status = (event.status && event.status.type && event.status.type.detail) || 'Scheduled';
+            const venue = (event.venue && event.venue.fullName) || 'Venue TBD';
+            const price = 25 + Math.floor(Math.random() * 110);
+
+            return `
+                <article class="game-card">
+                    <div class="game-header">
+                        <span class="badge ${sport === 'nba' ? 'badge-nba' : sport === 'nfl' ? 'badge-nfl' : 'badge-mlb'}">${config.label}</span>
+                        <span class="status-live">🔴 ${status}</span>
+                    </div>
+                    <div class="game-matchup">
+                        <div class="team">${awayName} <strong>${awayScore}</strong></div>
+                        <div class="vs">VS</div>
+                        <div class="team">${homeName} <strong>${homeScore}</strong></div>
+                    </div>
+                    <div class="game-info">
+                        <p>📍 ${venue}</p>
+                        <p style="font-size: 13px; color: var(--accent); margin-top: 4px;">⚡ Starting from $${price}</p>
+                    </div>
+                    <div class="ticket-actions">
+                        <a href="https://seatgeek.com/sports-tickets" target="_blank" rel="noopener noreferrer" class="ticket-btn btn-seatgeek">Find Deals on SeatGeek ➔</a>
+                        <a href="https://www.stubhub.com" target="_blank" rel="noopener noreferrer" class="ticket-btn btn-stubhub">Compare on StubHub ➔</a>
+                        <a href="https://www.ticketmaster.com" target="_blank" rel="noopener noreferrer" class="ticket-btn btn-ticketmaster">Buy on Ticketmaster ➔</a>
+                    </div>
+                </article>
+            `;
+        }).join('');
+    } catch (error) {
+        console.warn('Falling back to static scoreboard data:', error);
+        container.innerHTML = buildFallbackGameCards(sport);
+    }
+}
+
 let searchDebounceTimer;
 document.addEventListener('input', (e) => {
     if (e.target && e.target.getAttribute('list') === 'all-players-list') {
@@ -359,7 +566,7 @@ function calculateFantasyTrade() {
                 <li><strong>Team A Asset Ranks & Stats:</strong> ${teamAStats || 'None'}</li>
                 <li><strong>Team B Asset Ranks & Stats:</strong> ${teamBStats || 'None'}</li>
                 <li><strong>Net Adjusted Differential:</strong> ${Math.abs(Math.round(diff))} pts</li>
-                <li><strong>Stud Tax Applied:</strong> ${(maxValA > maxValB && playersB.length > 1) ? "Team B Depth Package Penalty (-12%)" : (maxValB > maxValA && playersA.length > 1) ? "Team A Depth Package Penalty (-12%)" : "None"}</li>
+                <li><strong>Stud Tax Applied:</strong> ${(maxValA > maxValB && playersB.length > 1) ? "Team B Depth Package Penalty (-12%)" : (maxValB > maxValA && playersA.length > 1) ? "Team A Depth Package Penalty (-12%)" : "No stud tax applied"}</li>
             </ul>
         `;
     }
@@ -501,7 +708,7 @@ function simulateGMGames(numGames) {
         const ptsA = Math.floor(95 + Math.random() * 25 + (isWin ? 8 : 0));
         const ptsB = isWin ? ptsA - Math.floor(1 + Math.random() * 12) : ptsA + Math.floor(1 + Math.random() * 12);
 
-        ticker.innerHTML = `Game ${game}/${numGames}: ${isWin ? '<strong style="color:var(--success)">WIN</strong>' : '<strong style="color:var(--danger)">LOSS</strong>'} vs ${opp} (${ptsA}-${ptsB}) | Current Record: <strong>${wins}-${losses}</strong>`;
+        ticker.innerHTML = `Game ${game}/${numGames}: ${isWin ? '<strong style="color:var(--success)">WIN</strong>' : '<strong style="color:var(--danger)">LOSS</strong>'} vs ${opp} (${ptsA}-${ptsB})`;
         if (progressBar) progressBar.style.width = `${(game / numGames) * 100}%`;
 
         if (game >= numGames) {
@@ -552,6 +759,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (document.getElementById('gm-roster-grid')) {
         updateGMRosterUI();
+    }
+
+    if (document.getElementById('espn-news-grid')) {
+        loadESPNNews(currentGMSport || 'nba');
+    }
+
+    if (document.getElementById('live-games-container')) {
+        fetchLiveESPNScores('nba');
     }
 
     loadSleeperNFLBulk();
